@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Structures and Dynamic Memory</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .gui-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .gui-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .gui-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .gui-details {
+        flex: 1;
+      }
+
+      .gui-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .embedded-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .embedded-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .embedded-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--success-color);
+        flex-shrink: 0;
+      }
+
+      .embedded-details {
+        flex: 1;
+      }
+
+      .embedded-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .adobe-products {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+      }
+
+      .adobe-product {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+        width: 30%;
+      }
+
+      .adobe-product:hover {
+        transform: translateY(-10px);
+        background-color: #e9ecef;
+      }
+
+      .adobe-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+      }
+
+      .adobe-name {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .output-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .type-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .pointer-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .memory-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 10px;
+      }
+
+      .memory-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .memory-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      .memory-label {
+        min-width: 150px;
+        text-align: right;
+        padding-right: 15px;
+        font-weight: 600;
+      }
+
+      .memory-value {
+        background-color: var(--light-bg);
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        padding: 8px 15px;
+        min-width: 120px;
+        text-align: center;
+      }
+
+      .struct-visual {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .struct-box {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+        width: 80%;
+        text-align: center;
+      }
+
+      .struct-member {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .struct-member:last-child {
+        border-bottom: none;
+      }
+
+      .member-name {
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .member-type {
+        color: var(--secondary-color);
+      }
+
+      .flow-diagram {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .flow-step {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px;
+        width: 180px;
+        text-align: center;
+      }
+
+      .flow-arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 5px;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .adobe-products {
+          flex-direction: column;
+          align-items: center;
+        }
+        .adobe-product {
+          width: 80%;
+          margin-bottom: 20px;
+        }
+        .flow-diagram {
+          flex-direction: column;
+        }
+        .flow-arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/struct-dynamic-memory/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">
+            C Structures and Dynamic Memory <span class="emoji">🏗️</span>
+          </h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Combining Structures with Dynamic Memory Management
+          </p>
+          <div class="feature-card" style="margin-top: 40px">
+            <div class="feature-icon">🚗</div>
+            <h3>What We'll Cover</h3>
+            <ul class="point-list" style="text-align: left">
+              <li>Allocating memory for structures</li>
+              <li>Using arrays of structures</li>
+              <li>Growing arrays with realloc()</li>
+              <li>Real-life memory management example</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">1/18</div>
+      </div>
+
+      <!-- Slide 2: Introduction -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/struct-intro/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Structures and Dynamic Memory <span class="emoji">📚</span></h2>
+          <div class="card">
+            <h3>Why Combine Structures with Dynamic Memory?</h3>
+            <p>
+              You can also use dynamic memory with structures. This is useful
+              when you don't know how many structs you'll need in advance, or
+              want to save memory by only allocating what's necessary.
+            </p>
+            <p>
+              For example, in a car dealership program where the number of cars
+              is not fixed, dynamic memory allocation allows you to create a
+              flexible data structure that can grow or shrink as needed.
+            </p>
+          </div>
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🔄</div>
+              <h4>Flexibility</h4>
+              <p>Create data structures that can change size during runtime</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💾</div>
+              <h4>Memory Efficiency</h4>
+              <p>Only allocate the memory you actually need</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🚗</div>
+              <h4>Real-World Applications</h4>
+              <p>Perfect for applications with variable data sizes</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">2/18</div>
+      </div>
+
+      <!-- Slide 3: Allocating Memory for a Struct -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/struct-allocation/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Allocating Memory for a Struct <span class="emoji">🏗️</span></h2>
+          <div class="card">
+            <h3>Using malloc() with Structures</h3>
+            <p>
+              You can use the malloc() function to allocate memory for a struct
+              pointer. This allows you to create structure instances dynamically
+              at runtime.
+            </p>
+            <p>
+              The process is similar to allocating memory for primitive types,
+              but you use sizeof(struct) to determine the size of memory needed.
+            </p>
+          </div>
+          <div class="pointer-visual">
+            <div class="memory-block">
+              <p>Memory Request</p>
+              <p>malloc(sizeof(struct Car))</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="memory-block">
+              <p>Allocated Memory</p>
+              <p>struct Car *</p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Remember</div>
+              <p>
+                Always check if malloc() returns NULL to handle allocation
+                failures gracefully.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">3/18</div>
+      </div>
+
+      <!-- Slide 4: Struct Example -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/struct-example/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Struct Example <span class="emoji">💻</span></h2>
+          <div class="card">
+            <h3>Complete Example of Allocating Memory for a Struct</h3>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;stdlib.h&gt;</span><br />
+              <span class="code-comment">#include &lt;string.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">struct</span> Car {<br />
+              &nbsp;&nbsp;<span class="code-keyword">char</span>
+              brand[50];<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> year;<br />
+              };<br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Allocate memory for one Car struct</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">struct</span> Car *ptr =
+              (<span class="code-keyword">struct</span> Car*)
+              <span class="code-function">malloc</span>(<span
+                class="code-function"
+                >sizeof</span
+              >(<span class="code-keyword">struct</span> Car));<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Check if allocation was successful</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (ptr == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Memory allocation failed.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;
+              <span class="code-comment"
+                >// Exit the program with an error code</span
+              ><br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment">// Set values</span><br />
+              &nbsp;&nbsp;<span class="code-function">strcpy</span>(ptr->brand,
+              <span class="code-string">"Honda"</span>);<br />
+              &nbsp;&nbsp;ptr->year = 2022;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment">// Print values</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Brand: %s\n"</span
+              >, ptr->brand);<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Year: %d\n"</span
+              >, ptr->year);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment">// Free memory</span><br />
+              &nbsp;&nbsp;<span class="code-function">free</span
+              >(ptr);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">4/18</div>
+      </div>
+
+      <!-- Slide 5: Example Explained -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/example-explained/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Example Explained <span class="emoji">🔍</span></h2>
+          <div class="card">
+            <h3>Understanding the Code</h3>
+            <ul class="point-list">
+              <li>
+                <span class="highlight">malloc()</span> allocates memory for one
+                struct
+              </li>
+              <li>
+                <span class="highlight">strcpy()</span> is used to copy a string
+                into the brand field
+              </li>
+              <li>
+                We use <span class="highlight">-></span> to access members
+                through the pointer
+              </li>
+              <li>
+                <span class="highlight">free()</span> is used at the end to
+                release the memory
+              </li>
+            </ul>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">💡</div>
+            <div class="application-title">Important Note</div>
+            <div class="application-desc">
+              malloc() allocates uninitialized memory. The content will be
+              undefined until you assign values. If you want memory initialized
+              to zero, you can use calloc().
+            </div>
+          </div>
+          <div class="struct-visual">
+            <div class="struct-box">
+              <h4>Car Structure in Memory</h4>
+              <div class="struct-member">
+                <span class="member-name">brand</span>
+                <span class="member-type">char[50]</span>
+              </div>
+              <div class="struct-member">
+                <span class="member-name">year</span>
+                <span class="member-type">int</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">5/18</div>
+      </div>
+
+      <!-- Slide 6: Arrays of Structs -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/arrays-structs/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Using Arrays of Structs <span class="emoji">📊</span></h2>
+          <div class="card">
+            <h3>Allocating Memory for Multiple Structs</h3>
+            <p>
+              You can also allocate memory for multiple structs at once, like an
+              array. This is useful when you need to work with collections of
+              structured data.
+            </p>
+            <p>
+              To allocate memory for an array of structs, you multiply the size
+              of the struct by the number of elements you want:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">struct</span> Car *cars = (<span
+                class="code-keyword"
+                >struct</span
+              >
+              Car*) <span class="code-function">malloc</span>(3 *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >struct</span
+              >
+              Car));
+            </div>
+          </div>
+          <div class="pointer-visual">
+            <div class="memory-block">
+              <p>Memory Request</p>
+              <p>malloc(3 * sizeof(struct Car))</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="memory-block">
+              <p>Allocated Memory</p>
+              <p>struct Car[3]</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">6/18</div>
+      </div>
+
+      <!-- Slide 7: Arrays of Structs Example -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/arrays-structs-example/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Arrays of Structs Example <span class="emoji">🚗</span></h2>
+          <div class="card">
+            <h3>Allocate Memory for 3 Cars</h3>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;stdlib.h&gt;</span><br />
+              <span class="code-comment">#include &lt;string.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">struct</span> Car {<br />
+              &nbsp;&nbsp;<span class="code-keyword">char</span>
+              brand[50];<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> year;<br />
+              };<br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-keyword">struct</span> Car *cars =
+              (<span class="code-keyword">struct</span> Car*)
+              <span class="code-function">malloc</span>(3 *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >struct</span
+              >
+              Car));<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (cars == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Memory allocation failed.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;
+              <span class="code-comment"
+                >// Exit the program with an error code</span
+              ><br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment">// Fill the data</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-function">strcpy</span
+              >(cars[0].brand, <span class="code-string">"Ford"</span>);<br />
+              &nbsp;&nbsp;cars[0].year = 2015;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">strcpy</span
+              >(cars[1].brand, <span class="code-string">"BMW"</span>);<br />
+              &nbsp;&nbsp;cars[1].year = 2018;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">strcpy</span
+              >(cars[2].brand, <span class="code-string">"Volvo"</span>);<br />
+              &nbsp;&nbsp;cars[2].year = 2023;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment">// Print the data</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">for</span> (<span
+                class="code-keyword"
+                >int</span
+              >
+              i = 0; i < 3; i++) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"%s - %d\n"</span>, cars[i].brand,
+              cars[i].year);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">free</span>(cars);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">7/18</div>
+      </div>
+
+      <!-- Slide 8: Growing Arrays with realloc -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/growing-arrays/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Growing Arrays with realloc() <span class="emoji">🔄</span></h2>
+          <div class="card">
+            <h3>Resizing Dynamic Arrays of Structs</h3>
+            <p>
+              If you need more elements later, you can resize your dynamic array
+              with realloc(). This may move the block to a new location and
+              returns a new pointer.
+            </p>
+            <p>
+              Always store the result in a temporary pointer first to avoid
+              losing the original memory if reallocation fails.
+            </p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>Initial Array</p>
+              <p>2 elements</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Need More Space</p>
+              <p>Request 3 elements</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Use realloc()</p>
+              <p>Resize to 3 elements</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Expanded Array</p>
+              <p>3 elements</p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">⚠️</div>
+            <div class="component-details">
+              <div class="component-name">Important</div>
+              <p>
+                New space added by realloc() is uninitialized. Be sure to
+                initialize newly added elements before using them.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">8/18</div>
+      </div>
+
+      <!-- Slide 9: realloc Example -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/realloc-example/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>realloc Example <span class="emoji">🚗</span></h2>
+          <div class="card">
+            <h3>Expand an Array of Structs</h3>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;stdlib.h&gt;</span><br />
+              <span class="code-comment">#include &lt;string.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">struct</span> Car {<br />
+              &nbsp;&nbsp;<span class="code-keyword">char</span>
+              brand[50];<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> year;<br />
+              };<br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> count = 2;<br />
+              &nbsp;&nbsp;<span class="code-keyword">struct</span> Car *cars =
+              (<span class="code-keyword">struct</span> Car*)
+              <span class="code-function">malloc</span>(count *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >struct</span
+              >
+              Car));<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (cars == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Initial allocation failed.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Initialize first 2 cars</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-function">strcpy</span
+              >(cars[0].brand, <span class="code-string">"Toyota"</span>);
+              cars[0].year = 2010;<br />
+              &nbsp;&nbsp;<span class="code-function">strcpy</span
+              >(cars[1].brand, <span class="code-string">"Audi"</span>);
+              cars[1].year = 2019;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Need one more car -> grow to 3</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> newCount = 3;<br />
+              &nbsp;&nbsp;<span class="code-keyword">struct</span> Car *tmp =
+              (<span class="code-keyword">struct</span> Car*)
+              <span class="code-function">realloc</span>(cars, newCount *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >struct</span
+              >
+              Car));<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (tmp == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"
+                >// 'cars' is still valid here; free it to avoid a leak</span
+              ><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">free</span
+              >(cars);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Reallocation failed.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;cars = tmp;
+              <span class="code-comment">// use the reallocated block</span
+              ><br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Initialize the new element at index 2</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-function">strcpy</span
+              >(cars[2].brand, <span class="code-string">"Kia"</span>); <br />
+              &nbsp;&nbsp;cars[2].year = 2022;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment">// Print all cars</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">for</span> (<span
+                class="code-keyword"
+                >int</span
+              >
+              i = 0; i < newCount; i++) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"%s - %d\n"</span>, cars[i].brand,
+              cars[i].year);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">free</span>(cars);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">9/18</div>
+      </div>
+
+      <!-- Slide 10: Memory Management Example -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/memory-management-example/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            Real-Life Memory Management Example <span class="emoji">📋</span>
+          </h2>
+          <div class="card">
+            <h3>Creating a Dynamic List</h3>
+            <p>
+              To demonstrate a practical example of dynamic memory, we created a
+              program that can make a list of any length.
+            </p>
+            <p>
+              Regular arrays in C have a fixed length and cannot be changed, but
+              with dynamic memory we can create a list as long as we like:
+            </p>
+          </div>
+          <div class="struct-visual">
+            <div class="struct-box">
+              <h4>List Structure</h4>
+              <div class="struct-member">
+                <span class="member-name">data</span>
+                <span class="member-type">int *</span>
+              </div>
+              <div class="struct-member">
+                <span class="member-name">numItems</span>
+                <span class="member-type">int</span>
+              </div>
+              <div class="struct-member">
+                <span class="member-name">size</span>
+                <span class="member-type">int</span>
+              </div>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Key Concept</div>
+              <p>
+                The list structure contains all the information needed to manage
+                a dynamic list: a pointer to the data, the current number of
+                items, and the allocated capacity.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">10/18</div>
+      </div>
+
+      <!-- Slide 11: List Structure Code -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/list-structure-code/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>List Structure Code <span class="emoji">💻</span></h2>
+          <div class="card">
+            <h3>Defining the List Structure</h3>
+            <div class="code-block">
+              <span class="code-keyword">struct</span> list {<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> *data;
+              <span class="code-comment"
+                >// Points to the memory where the list items are stored</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> numItems;
+              <span class="code-comment"
+                >// Indicates how many items are currently in the list</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> size;
+              <span class="code-comment"
+                >// Indicates how many items fit in the allocated memory</span
+              ><br />
+              };<br /><br />
+
+              <span class="code-keyword">void</span> addToList(<span
+                class="code-keyword"
+                >struct</span
+              >
+              list *myList, <span class="code-keyword">int</span> item);
+            </div>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">📝</div>
+            <div class="application-title">Structure Members Explained</div>
+            <div class="application-desc">
+              <ul class="point-list">
+                <li>
+                  <strong>data:</strong> A pointer to the dynamic memory which
+                  contains the contents of the list
+                </li>
+                <li>
+                  <strong>numItems:</strong> Indicates the number of items that
+                  list has
+                </li>
+                <li>
+                  <strong>size:</strong> Indicates how many items can fit in the
+                  allocated memory
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Pointers to Structures</div>
+              <p>
+                This example uses a pointer to the structure myList. Because we
+                are using a pointer to the structure instead of the structure
+                itself, we use the arrow syntax (->) to access the structure's
+                members.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">11/18</div>
+      </div>
+
+      <!-- Slide 12: main() Function -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/main-function/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>The main() Function <span class="emoji">🎯</span></h2>
+          <div class="card">
+            <h3>Initializing the List</h3>
+            <div class="code-block">
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-keyword">struct</span> list
+              myList;<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> amount;<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> i, j;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Create a list and start with enough space for 10 items</span
+              ><br />
+              &nbsp;&nbsp;myList.numItems = 0;<br />
+              &nbsp;&nbsp;myList.size = 10;<br />
+              &nbsp;&nbsp;myList.data =
+              <span class="code-function">malloc</span>(myList.size *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Find out if memory allocation was successful</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (myList.data ==
+              NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Memory allocation failed"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;
+              <span class="code-comment"
+                >// Exit the program with an error code</span
+              ><br />
+              &nbsp;&nbsp;}
+            </div>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">🔍</div>
+            <div class="application-title">Initialization Explained</div>
+            <div class="application-desc">
+              <ul class="point-list">
+                <li>
+                  myList.numItems is set to 0 because the list starts off empty
+                </li>
+                <li>
+                  myList.size keeps track of how much memory is reserved (10
+                  items)
+                </li>
+                <li>
+                  We allocate memory and store a pointer to it in myList.data
+                </li>
+                <li>
+                  We include error checking to verify allocation was successful
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">12/18</div>
+      </div>
+
+      <!-- Slide 13: main() Function Continued -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/main-function-continued/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>The main() Function Continued <span class="emoji">📋</span></h2>
+          <div class="card">
+            <h3>Adding Items and Displaying the List</h3>
+            <div class="code-block">
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Add any number of items to the list specified by the amount
+                variable</span
+              ><br />
+              &nbsp;&nbsp;amount = 44;<br />
+              &nbsp;&nbsp;<span class="code-keyword">for</span> (i = 0; i <
+              amount; i++) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;addToList(&myList, i + 1);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Display the contents of the list</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">for</span> (j = 0; j <
+              myList.numItems; j++) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"%d "</span>, myList.data[j]);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Free the memory when it is no longer needed</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-function">free</span
+              >(myList.data);<br />
+              &nbsp;&nbsp;myList.data = NULL;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Key Points</div>
+              <p>
+                In the code above, &myList is a pointer to the list and i + 1 is
+                a number that we want to add to the list. We chose i + 1 so that
+                the list would start at 1 instead of 0.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">13/18</div>
+      </div>
+
+      <!-- Slide 14: addToList() Function -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/addtolist-function/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>The addToList() Function <span class="emoji">➕</span></h2>
+          <div class="card">
+            <h3>Adding Items to the List</h3>
+            <div class="code-block">
+              <span class="code-comment"
+                >// This function adds an item to a list</span
+              ><br />
+              <span class="code-keyword">void</span> addToList(<span
+                class="code-keyword"
+                >struct</span
+              >
+              list *myList, <span class="code-keyword">int</span> item) {<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// If the list is full then resize the memory to fit 10 more
+                items</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (myList->numItems
+              == myList->size) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">int</span>
+              newSize = myList->size + 10;<br /><br />
+
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"
+                >// Use a temporary pointer so we don't lose the original on
+                failure</span
+              ><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">int</span> *tmp
+              = <span class="code-function">realloc</span>(myList->data, newSize
+              * <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (tmp
+              == NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function"
+                >printf</span
+              >(<span class="code-string">"Memory resize failed\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword"
+                >return</span
+              >; <span class="code-comment">// Leave the list unchanged</span
+              ><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"
+                >// Only update fields after a successful reallocation</span
+              ><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;myList->data = tmp;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;myList->size = newSize;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Add the item to the end of the list</span
+              ><br />
+              &nbsp;&nbsp;myList->data[myList->numItems] = item;<br />
+              &nbsp;&nbsp;myList->numItems++;<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">14/18</div>
+      </div>
+
+      <!-- Slide 15: addToList() Function Explained -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/addtolist-explained/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>addToList() Function Explained <span class="emoji">🔍</span></h2>
+          <div class="card">
+            <h3>How the Function Works</h3>
+            <p>
+              The addToList() function adds an item to the list. It takes two
+              parameters:
+            </p>
+            <ul class="point-list">
+              <li>A pointer to the list</li>
+              <li>The value to be added to the list</li>
+            </ul>
+            <p>
+              The function first checks if the list is full by comparing the
+              number of items in the list to the size (capacity). If the list is
+              full, it tries to grow the memory to fit 10 more items.
+            </p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>Check if list is full</p>
+              <p>numItems == size?</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>If full, resize</p>
+              <p>realloc() for more space</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Add item</p>
+              <p>data[numItems] = item</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Increment count</p>
+              <p>numItems++</p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Safety First</div>
+              <p>
+                We use a temporary pointer with realloc so we don't lose the
+                original block if the resize fails. We only update data and size
+                after a successful resize.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">15/18</div>
+      </div>
+
+      <!-- Slide 16: Why Reserve 10 Items at a Time -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/reserve-items/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Why Reserve 10 Items at a Time? <span class="emoji">⚖️</span></h2>
+          <div class="card">
+            <h3>Optimizing Memory Allocation</h3>
+            <p>
+              Optimizing is a balancing act between memory and performance. Even
+              though we may be allocating some memory that we are not using,
+              reallocating memory too frequently can be inefficient.
+            </p>
+            <p>
+              There is a balance between allocating too much memory and
+              allocating memory too frequently.
+            </p>
+          </div>
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h4>Performance</h4>
+              <p>
+                Reserving memory in larger chunks reduces the frequency of
+                reallocation operations
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💾</div>
+              <h4>Memory Usage</h4>
+              <p>
+                Allocating too much at once wastes memory that could be used by
+                other parts of the program
+              </p>
+            </div>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">💡</div>
+            <div class="application-title">Finding the Right Balance</div>
+            <div class="application-desc">
+              We chose the number 10 for this example, but it depends on how
+              much data you expect and how often it changes. For example, if we
+              know beforehand that we are going to have exactly 44 items then we
+              can allocate memory for exactly 44 items and only allocate it
+              once.
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">16/18</div>
+      </div>
+
+      <!-- Slide 17: Complete Example -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/complete-example/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Complete Example <span class="emoji">📋</span></h2>
+          <div class="card">
+            <h3>Putting It All Together</h3>
+            <div class="code-block" style="max-height: 400px; overflow-y: auto">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;stdlib.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">struct</span> list {<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> *data;<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> numItems;<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> size;<br />
+              };<br /><br />
+
+              <span class="code-keyword">void</span> addToList(<span
+                class="code-keyword"
+                >struct</span
+              >
+              list *myList,
+              <span class="code-keyword">int</span> item);<br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-keyword">struct</span> list
+              myList;<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> amount;<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> i, j;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Create a list and start with enough space for 10 items</span
+              ><br />
+              &nbsp;&nbsp;myList.numItems = 0;<br />
+              &nbsp;&nbsp;myList.size = 10;<br />
+              &nbsp;&nbsp;myList.data =
+              <span class="code-function">malloc</span>(myList.size *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Find out if memory allocation was successful</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (myList.data ==
+              NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Memory allocation failed"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Add any number of items to the list</span
+              ><br />
+              &nbsp;&nbsp;amount = 44;<br />
+              &nbsp;&nbsp;<span class="code-keyword">for</span> (i = 0; i <
+              amount; i++) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;addToList(&myList, i + 1);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Display the contents of the list</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">for</span> (j = 0; j <
+              myList.numItems; j++) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"%d "</span>, myList.data[j]);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Free the memory when it is no longer needed</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-function">free</span
+              >(myList.data);<br />
+              &nbsp;&nbsp;myList.data = NULL;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }<br /><br />
+
+              <span class="code-comment"
+                >// This function adds an item to a list</span
+              ><br />
+              <span class="code-keyword">void</span> addToList(<span
+                class="code-keyword"
+                >struct</span
+              >
+              list *myList, <span class="code-keyword">int</span> item) {<br />
+              &nbsp;&nbsp;<span class="code-comment"
+                >// If the list is full then resize the memory</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (myList->numItems
+              == myList->size) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">int</span>
+              newSize = myList->size + 10;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">int</span> *tmp
+              = <span class="code-function">realloc</span>(myList->data, newSize
+              * <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (tmp
+              == NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function"
+                >printf</span
+              >(<span class="code-string">"Memory resize failed\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword"
+                >return</span
+              >;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;myList->data = tmp;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;myList->size = newSize;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Add the item to the end of the list</span
+              ><br />
+              &nbsp;&nbsp;myList->data[myList->numItems] = item;<br />
+              &nbsp;&nbsp;myList->numItems++;<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">17/18</div>
+      </div>
+
+      <!-- Slide 18: Summary -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/struct-summary/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Summary <span class="emoji">📝</span></h2>
+          <div class="summary-box">
+            <h3>Key Takeaways</h3>
+            <ul class="point-list" style="color: white">
+              <li>
+                Structures can be combined with dynamic memory allocation to
+                create flexible data structures
+              </li>
+              <li>
+                Use malloc() to allocate memory for structures and arrays of
+                structures
+              </li>
+              <li>Use realloc() to resize arrays of structures when needed</li>
+              <li>Always check for NULL after memory allocation</li>
+              <li>Remember to free memory when it's no longer needed</li>
+              <li>
+                Find a balance between memory efficiency and performance when
+                deciding how much memory to allocate at once
+              </li>
+            </ul>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">📚</div>
+            <div class="application-title">Complete stdlib Reference</div>
+            <div class="application-desc">
+              For a complete reference of memory management functions and other
+              functions found in the standard library, go to our C
+              &lt;stdlib.h&gt; Library Reference.
+            </div>
+          </div>
+          <div class="grid-container" style="margin-top: 30px">
+            <div class="feature-card">
+              <div class="feature-icon">✅</div>
+              <h4>Do</h4>
+              <p>Check for NULL after allocation</p>
+              <p>Free memory when done</p>
+              <p>Use temporary pointers with realloc</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">❌</div>
+              <h4>Don't</h4>
+              <p>Forget to free allocated memory</p>
+              <p>Assume allocation always succeeds</p>
+              <p>Use freed memory</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">18/18</div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(8)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(9)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(10)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(11)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(12)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(13)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(14)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(15)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(16)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(17)"></div>
+    </div>
+
+    <script>
+      function scrollToSlide(index) {
+        const slides = document.querySelectorAll(".slide");
+        slides[index].scrollIntoView({ behavior: "smooth" });
+
+        // Update active navigation dot
+        const navDots = document.querySelectorAll(".nav-dot");
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[index].classList.add("active");
+      }
+
+      // Update active navigation dot based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[currentSlide].classList.add("active");
+      });
+    </script>
+  </body>
+</html>

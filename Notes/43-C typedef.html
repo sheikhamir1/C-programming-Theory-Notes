@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C typedef - Beautiful Slides</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .gui-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .gui-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .gui-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .gui-details {
+        flex: 1;
+      }
+
+      .gui-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .embedded-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .embedded-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .embedded-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--success-color);
+        flex-shrink: 0;
+      }
+
+      .embedded-details {
+        flex: 1;
+      }
+
+      .embedded-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .adobe-products {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+      }
+
+      .adobe-product {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+        width: 30%;
+      }
+
+      .adobe-product:hover {
+        transform: translateY(-10px);
+        background-color: #e9ecef;
+      }
+
+      .adobe-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+      }
+
+      .adobe-name {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .output-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .type-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .pointer-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .memory-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 10px;
+      }
+
+      .memory-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .memory-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      .memory-label {
+        min-width: 150px;
+        text-align: right;
+        padding-right: 15px;
+        font-weight: 600;
+      }
+
+      .memory-value {
+        background-color: var(--light-bg);
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        padding: 8px 15px;
+        min-width: 120px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .adobe-products {
+          flex-direction: column;
+          align-items: center;
+        }
+        .adobe-product {
+          width: 80%;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Slide 1: Title Slide -->
+      <div class="slide" id="slide1">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/programming-cartoon/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">C typedef <span class="emoji">🔤</span></h1>
+          <h2>Creating Custom Type Names in C</h2>
+          <div class="card">
+            <p style="text-align: center; font-size: 1.3rem">
+              <span class="emoji">👨‍💻</span> Learn how to make your C code more
+              readable and maintainable <span class="emoji">💡</span>
+            </p>
+          </div>
+          <div class="summary-box">
+            <h3 style="color: white; margin-bottom: 15px">What You'll Learn</h3>
+            <ul class="point-list" style="color: white">
+              <li>What is typedef and how it works</li>
+              <li>Benefits of using typedef in your code</li>
+              <li>typedef with structs</li>
+              <li>Nested structs with typedef</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">1/7</div>
+      </div>
+
+      <!-- Slide 2: What is typedef -->
+      <div class="slide" id="slide2">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/code-concept/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>What is typedef? <span class="emoji">🤔</span></h2>
+          <div class="card">
+            <p>
+              The <span class="highlight">typedef</span> keyword lets you create
+              a new name (an alias) for an existing type. This can make complex
+              declarations easier to read, and your code easier to maintain.
+            </p>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">🌡️</div>
+            <div class="application-title">Example: Temperature Type</div>
+            <div class="application-desc">
+              <p>
+                Instead of always writing <span class="highlight">float</span>,
+                we can create a new type called
+                <span class="highlight">Temperature</span> to make the code
+                clearer:
+              </p>
+            </div>
+            <div class="code-block">
+              <pre><span class="code-comment">#include &lt;stdio.h&gt;</span>
+
+<span class="code-keyword">typedef</span> <span class="code-keyword">float</span> Temperature;
+
+<span class="code-keyword">int</span> <span class="code-function">main</span>() {
+  Temperature today = <span class="code-number">25.5</span>;
+  Temperature tomorrow = <span class="code-number">18.6</span>;
+
+  <span class="code-function">printf</span>(<span class="code-string">"Today: %.1f C\n"</span>, today);
+  <span class="code-function">printf</span>(<span class="code-string">"Tomorrow: %.1f C\n"</span>, tomorrow);
+
+  <span class="code-keyword">return</span> <span class="code-number">0</span>;
+}</pre>
+            </div>
+            <div class="output-box">
+              <p>Output:</p>
+              <p>Today: 25.5 C</p>
+              <p>Tomorrow: 18.6 C</p>
+            </div>
+          </div>
+          <div class="card">
+            <p>
+              Here, <span class="highlight">Temperature</span> is just another
+              name for <span class="highlight">float</span>. However, the code
+              is more expressive: it tells us that these numbers are
+              temperatures, not just any floating-point numbers.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">2/7</div>
+      </div>
+
+      <!-- Slide 3: Why Use typedef -->
+      <div class="slide" id="slide3">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/code-benefits/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Why Use typedef? <span class="emoji">✨</span></h2>
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">📝</div>
+              <h3>Simplifies Code</h3>
+              <p>Shorter, easier-to-read type names</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎯</div>
+              <h3>Improves Clarity</h3>
+              <p>
+                Expresses intent better (for example, AGE instead of just int)
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔧</div>
+              <h3>Reduces Confusion</h3>
+              <p>
+                Helps avoid confusion when many variables share the same base
+                type
+              </p>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Good To Know <span class="emoji">💡</span></h3>
+            <p>
+              In modern C, typedef is often used together with
+              <span class="highlight">struct</span>,
+              <span class="highlight">enum</span>, and
+              <span class="highlight">function pointers</span> to keep code
+              clean and easier to read.
+            </p>
+          </div>
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">🚀</span>
+              Pro Tip
+            </div>
+            <p>
+              Using typedef can make your code more self-documenting. When
+              someone reads <span class="highlight">Temperature today;</span>,
+              they immediately understand the purpose of the variable, compared
+              to <span class="highlight">float today;</span>.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">3/7</div>
+      </div>
+
+      <!-- Slide 4: typedef with struct - Basic Example -->
+      <div class="slide" id="slide4">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/struct-programming/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>typedef with struct <span class="emoji">🚗</span></h2>
+          <div class="card">
+            <p>
+              typedef can be useful with struct, because it lets you avoid
+              writing <span class="highlight">struct</span> every time:
+            </p>
+          </div>
+          <div class="code-block">
+            <pre><span class="code-comment">#include &lt;stdio.h&gt;</span>
+
+<span class="code-comment">// Without typedef:</span>
+<span class="code-keyword">struct</span> Car {
+  <span class="code-keyword">char</span> brand[<span class="code-number">30</span>];
+  <span class="code-keyword">int</span> year;
+};
+
+<span class="code-comment">// With typedef:</span>
+<span class="code-keyword">typedef</span> <span class="code-keyword">struct</span> {
+  <span class="code-keyword">char</span> brand[<span class="code-number">30</span>];
+  <span class="code-keyword">int</span> year;
+} Car;
+
+<span class="code-keyword">int</span> <span class="code-function">main</span>() {
+  <span class="code-keyword">struct</span> Car car1 = {<span class="code-string">"BMW"</span>, <span class="code-number">1999</span>}; <span class="code-comment">// needs "struct"</span>
+  Car car2 = {<span class="code-string">"Ford"</span>, <span class="code-number">1969</span>}; <span class="code-comment">// shorter with typedef</span>
+
+  <span class="code-function">printf</span>(<span class="code-string">"%s %d\n"</span>, car1.brand, car1.year);
+  <span class="code-function">printf</span>(<span class="code-string">"%s %d\n"</span>, car2.brand, car2.year);
+  <span class="code-keyword">return</span> <span class="code-number">0</span>;
+}</pre>
+          </div>
+          <div class="output-box">
+            <p>Output:</p>
+            <p>BMW 1999</p>
+            <p>Ford 1969</p>
+          </div>
+          <div class="card">
+            <p>
+              Notice how with typedef, we can simply write
+              <span class="highlight">Car car2</span> instead of
+              <span class="highlight">struct Car car2</span>. This makes the
+              code cleaner and more readable.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">4/7</div>
+      </div>
+
+      <!-- Slide 5: typedef with struct - More Complex Example -->
+      <div class="slide" id="slide5">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/car-models/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Multiple Car Models <span class="emoji">🏎️</span></h2>
+          <div class="card">
+            <p>
+              This example shows how typedef makes it easier to work with
+              multiple struct variables, like different car models:
+            </p>
+          </div>
+          <div class="code-block">
+            <pre><span class="code-comment">#include &lt;stdio.h&gt;</span>
+
+<span class="code-comment">// With typedef</span>
+<span class="code-keyword">typedef</span> <span class="code-keyword">struct</span> {
+  <span class="code-keyword">char</span> brand[<span class="code-number">30</span>];
+  <span class="code-keyword">char</span> model[<span class="code-number">30</span>];
+  <span class="code-keyword">int</span> year;
+} Car;
+
+<span class="code-keyword">int</span> <span class="code-function">main</span>() {
+  Car car1 = {<span class="code-string">"BMW"</span>, <span class="code-string">"X5"</span>, <span class="code-number">1999</span>};
+  Car car2 = {<span class="code-string">"Ford"</span>, <span class="code-string">"Mustang"</span>, <span class="code-number">1969</span>};
+  Car car3 = {<span class="code-string">"Toyota"</span>, <span class="code-string">"Corolla"</span>, <span class="code-number">2011</span>};
+
+  <span class="code-function">printf</span>(<span class="code-string">"%s %s %d\n"</span>, car1.brand, car1.model, car1.year);
+  <span class="code-function">printf</span>(<span class="code-string">"%s %s %d\n"</span>, car2.brand, car2.model, car2.year);
+  <span class="code-function">printf</span>(<span class="code-string">"%s %s %d\n"</span>, car3.brand, car3.model, car3.year);
+
+  <span class="code-keyword">return</span> <span class="code-number">0</span>;
+}</pre>
+          </div>
+          <div class="output-box">
+            <p>Output:</p>
+            <p>BMW X5 1999</p>
+            <p>Ford Mustang 1969</p>
+            <p>Toyota Corolla 2011</p>
+          </div>
+          <div class="card">
+            <p>
+              With typedef, we can declare multiple car variables without
+              repeating the <span class="highlight">struct</span> keyword each
+              time, making the code more concise and readable.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">5/7</div>
+      </div>
+
+      <!-- Slide 6: Nested structs with typedef -->
+      <div class="slide" id="slide6">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/nested-structures/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Nested Structs with typedef <span class="emoji">🏪</span></h2>
+          <div class="card">
+            <p>
+              Here you can see how typedef keeps the code clean when structs are
+              nested inside other structs:
+            </p>
+          </div>
+          <div class="code-block">
+            <pre><span class="code-comment">#include &lt;stdio.h&gt;</span>
+
+<span class="code-comment">// Define three structs with typedef</span>
+<span class="code-keyword">typedef</span> <span class="code-keyword">struct</span> {
+  <span class="code-keyword">char</span> firstName[<span class="code-number">20</span>];
+  <span class="code-keyword">char</span> lastName[<span class="code-number">20</span>];
+} Owner;
+
+<span class="code-keyword">typedef</span> <span class="code-keyword">struct</span> {
+  <span class="code-keyword">char</span> brand[<span class="code-number">20</span>];
+  <span class="code-keyword">int</span> year;
+  Owner owner;
+} Car;
+
+<span class="code-keyword">typedef</span> <span class="code-keyword">struct</span> {
+  <span class="code-keyword">char</span> name[<span class="code-number">30</span>];
+  Car featuredCar;
+} Dealership;
+
+<span class="code-keyword">int</span> <span class="code-function">main</span>() {
+  Owner person = {<span class="code-string">"John"</span>, <span class="code-string">"Doe"</span>};
+  Car car1 = {<span class="code-string">"Toyota"</span>, <span class="code-number">2010</span>, person};
+  Dealership d = {<span class="code-string">"City Motors"</span>, car1};
+
+  <span class="code-function">printf</span>(<span class="code-string">"Dealership: %s\n"</span>, d.name);
+  <span class="code-function">printf</span>(<span class="code-string">"Featured Car: %s (%d), owned by %s %s\n"</span>,
+    d.featuredCar.brand,
+    d.featuredCar.year,
+    d.featuredCar.owner.firstName,
+    d.featuredCar.owner.lastName);
+
+  <span class="code-keyword">return</span> <span class="code-number">0</span>;
+}</pre>
+          </div>
+          <div class="output-box">
+            <p>Output:</p>
+            <p>Dealership: City Motors</p>
+            <p>Featured Car: Toyota (2010), owned by John Doe</p>
+          </div>
+          <div class="card">
+            <p>
+              With typedef, we can create nested structures without repetitive
+              <span class="highlight">struct</span> declarations, making the
+              code cleaner and easier to understand.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">6/7</div>
+      </div>
+
+      <!-- Slide 7: Summary -->
+      <div class="slide" id="slide7">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/code-summary/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Summary <span class="emoji">📚</span></h2>
+          <div class="summary-box">
+            <h3 style="color: white; margin-bottom: 15px">Key Takeaways</h3>
+            <ul class="point-list" style="color: white">
+              <li>typedef creates an alias for an existing type</li>
+              <li>It makes code more readable and expressive</li>
+              <li>
+                Particularly useful with structs to avoid repeating the "struct"
+                keyword
+              </li>
+              <li>Helps when working with nested structures</li>
+              <li>
+                Modern C often uses typedef with struct, enum, and function
+                pointers
+              </li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Remember <span class="emoji">💡</span></h3>
+            <p>
+              It is up to you whether you want to use typedef or not. Your code
+              will work the same without it. However, in modern C it is often
+              used to make code shorter, clearer, and easier to maintain.
+            </p>
+          </div>
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🎯</div>
+              <h3>Clear Intent</h3>
+              <p>typedef makes your code more self-documenting</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🧹</div>
+              <h3>Cleaner Code</h3>
+              <p>Reduces repetition and improves readability</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔧</div>
+              <h3>Maintainability</h3>
+              <p>Easier to modify and understand complex types</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">7/7</div>
+      </div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide('slide1')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide2')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide3')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide4')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide5')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide6')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide7')"></div>
+    </div>
+
+    <script>
+      // Function to scroll to a specific slide
+      function scrollToSlide(slideId) {
+        document.getElementById(slideId).scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update active navigation dot based on scroll position
+      window.addEventListener("scroll", function () {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

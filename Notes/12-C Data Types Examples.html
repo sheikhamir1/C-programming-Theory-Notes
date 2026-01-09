@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Data Types Examples</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://picsum.photos/seed/cdatatypeexamples/1920/1080.jpg");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .example-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .example-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .example-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .example-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .example-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .example-desc {
+        margin-bottom: 15px;
+      }
+
+      .example-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .example-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .feature-icon-small {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .feature-details {
+        flex: 1;
+      }
+
+      .feature-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .line-number {
+        display: inline-block;
+        width: 30px;
+        color: #888;
+        text-align: right;
+        margin-right: 10px;
+      }
+
+      .note-box {
+        background-color: #e3f2fd;
+        border-left: 4px solid var(--secondary-color);
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .note-title {
+        color: var(--secondary-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .note-icon {
+        margin-right: 10px;
+      }
+
+      .tip-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .tip-title {
+        color: var(--success-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .tip-icon {
+        margin-right: 10px;
+      }
+
+      .warning-box {
+        background-color: #fff8e1;
+        border-left: 4px solid var(--warning-color);
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .warning-title {
+        color: var(--warning-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .warning-icon {
+        margin-right: 10px;
+      }
+
+      .datatype-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      .datatype-table th {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 15px;
+        text-align: left;
+      }
+
+      .datatype-table td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .datatype-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .datatype-table tr:hover {
+        background-color: var(--light-bg);
+      }
+
+      .output-preview {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 15px 0;
+        font-family: monospace;
+        text-align: left;
+        color: var(--text-color);
+      }
+
+      .calculation-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 30px 0;
+      }
+
+      .calculation-box {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 0 15px;
+        min-width: 120px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+      }
+
+      .calculation-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .calculation-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 5px;
+      }
+
+      .calculation-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin: 0 10px;
+      }
+
+      .size-check {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .size-box {
+        background-color: var(--info-color);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        min-width: 150px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .size-type {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .size-value {
+        font-size: 1.2rem;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .calculation-visual {
+          flex-direction: column;
+        }
+        .calculation-box {
+          margin: 10px 0;
+          width: 80%;
+        }
+        .arrow {
+          transform: rotate(90deg);
+        }
+        .datatype-table {
+          font-size: 0.8rem;
+        }
+        .datatype-table th,
+        .datatype-table td {
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide" id="slide1">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h1 class="floating">C Data Types Examples</h1>
+          <div class="emoji" style="font-size: 4rem">🔢💼📊</div>
+          <p style="font-size: 1.3rem; margin-top: 30px">
+            Exploring real-life examples and extended data types in C
+          </p>
+        </div>
+        <div class="slide-number">1/6</div>
+      </div>
+
+      <!-- Slide 2: Real-Life Example -->
+      <div class="slide" id="slide2">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Real-Life Example</h2>
+          <p>
+            Here's a real-life example of using different data types, to
+            calculate and output the total cost of a number of items:
+          </p>
+
+          <div class="code-block">
+            <span class="line-number">1</span
+            ><span class="code-comment"
+              >// Create variables of different data types</span
+            ><br />
+            <span class="line-number">2</span
+            ><span class="code-keyword">int</span> items =
+            <span class="code-number">50</span>;<br />
+            <span class="line-number">3</span
+            ><span class="code-keyword">float</span> cost_per_item =
+            <span class="code-number">9.99</span>;<br />
+            <span class="line-number">4</span
+            ><span class="code-keyword">float</span> total_cost = items *
+            cost_per_item;<br />
+            <span class="line-number">5</span
+            ><span class="code-keyword">char</span> currency =
+            <span class="code-string">'$'</span>;<br />
+            <span class="line-number">6</span><br />
+            <span class="line-number">7</span
+            ><span class="code-comment">// Print variables</span><br />
+            <span class="line-number">8</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Number of items: %d\n"</span
+            >, items);<br />
+            <span class="line-number">9</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Cost per item: %.2f %c\n"</span
+            >, cost_per_item, currency);<br />
+            <span class="line-number">10</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Total cost = %.2f %c\n"</span
+            >, total_cost, currency);
+          </div>
+
+          <div class="output-preview">
+            Number of items: 50<br />
+            Cost per item: 9.99 $<br />
+            Total cost = 499.50 $
+          </div>
+
+          <div class="calculation-visual">
+            <div class="calculation-box">
+              <div class="calculation-label">Items</div>
+              <div class="calculation-value">50</div>
+            </div>
+            <div class="arrow">×</div>
+            <div class="calculation-box">
+              <div class="calculation-label">Cost per item</div>
+              <div class="calculation-value">$9.99</div>
+            </div>
+            <div class="arrow">=</div>
+            <div class="calculation-box">
+              <div class="calculation-label">Total cost</div>
+              <div class="calculation-value">$499.50</div>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="example-icon">💡</div>
+            <div class="example-title">Data Types in Action</div>
+            <div class="example-desc">
+              <p>
+                This example demonstrates how different data types work
+                together:
+              </p>
+            </div>
+            <div class="example-feature">
+              <div class="feature-icon-small">🔢</div>
+              <div class="feature-details">
+                <div class="feature-title">int</div>
+                <p>Used for the count of items (whole number)</p>
+              </div>
+            </div>
+            <div class="example-feature">
+              <div class="feature-icon-small">🔢</div>
+              <div class="feature-details">
+                <div class="feature-title">float</div>
+                <p>
+                  Used for the cost per item and total cost (decimal values)
+                </p>
+              </div>
+            </div>
+            <div class="example-feature">
+              <div class="feature-icon-small">🔤</div>
+              <div class="feature-details">
+                <div class="feature-title">char</div>
+                <p>Used for the currency symbol</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">2/6</div>
+      </div>
+
+      <!-- Slide 3: Extended Types -->
+      <div class="slide" id="slide3">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>C Extended Types</h2>
+          <p>More Data Types</p>
+          <p>
+            Besides the basic types (int, float, double, char), C also gives you
+            extended keywords (short, long, unsigned) to control how large the
+            number is, or whether it can be negative:
+          </p>
+
+          <div class="datatype-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Size*</th>
+                  <th>Range (commonly)</th>
+                  <th>Format Specifier</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>short int</strong></td>
+                  <td>2 bytes</td>
+                  <td>-32,768 to 32,767</td>
+                  <td>%hd</td>
+                </tr>
+                <tr>
+                  <td><strong>unsigned int</strong></td>
+                  <td>2 or 4 bytes</td>
+                  <td>
+                    0 to 65,535 (2 bytes)<br />0 to 4,294,967,295 (4 bytes)
+                  </td>
+                  <td>%u</td>
+                </tr>
+                <tr>
+                  <td><strong>long int</strong></td>
+                  <td>4 or 8 bytes</td>
+                  <td>
+                    -2,147,483,648 to 2,147,483,647 (4 bytes)<br />-9,223,372,036,854,775,808
+                    to 9,223,372,036,854,775,807 (8 bytes)
+                  </td>
+                  <td>%ld</td>
+                </tr>
+                <tr>
+                  <td><strong>long long int</strong></td>
+                  <td>8 bytes</td>
+                  <td>
+                    -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
+                  </td>
+                  <td>%lld</td>
+                </tr>
+                <tr>
+                  <td><strong>unsigned long int</strong></td>
+                  <td>4 or 8 bytes</td>
+                  <td>
+                    0 to 4,294,967,295 (4 bytes)<br />0 to
+                    18,446,744,073,709,551,615 (8 bytes)
+                  </td>
+                  <td>%lu</td>
+                </tr>
+                <tr>
+                  <td><strong>unsigned long long int</strong></td>
+                  <td>8 bytes</td>
+                  <td>0 to 18,446,744,073,709,551,615</td>
+                  <td>%llu</td>
+                </tr>
+                <tr>
+                  <td><strong>long double</strong></td>
+                  <td>8, 12, or 16 bytes</td>
+                  <td>
+                    Implementation-dependent, but more precision than double
+                  </td>
+                  <td>%Lf</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">
+              <span class="note-icon">💡</span>
+              Note
+            </div>
+            <p>
+              unsigned means the type can only store non-negative values (0 and
+              up).
+            </p>
+          </div>
+
+          <div class="warning-box">
+            <div class="warning-title">
+              <span class="warning-icon">⚠️</span>
+              System Dependency
+            </div>
+            <p>
+              The size of these types can differ between systems (for example, 2
+              or 4 bytes, or 4 or 8 bytes), depending on whether the computer is
+              older or newer, 32-bit or 64-bit, and which compiler is used.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">3/6</div>
+      </div>
+
+      <!-- Slide 4: Extended Types Example -->
+      <div class="slide" id="slide4">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Extended Types Example</h2>
+          <p>
+            Here is an example of how you can create and print these extended
+            types:
+          </p>
+
+          <div class="code-block">
+            <span class="line-number">1</span
+            ><span class="code-keyword">int</span> normalInt =
+            <span class="code-number">1000</span>;
+            <span class="code-comment">// standard int</span><br />
+            <span class="line-number">2</span
+            ><span class="code-keyword">double</span> normalDouble =
+            <span class="code-number">3.14</span>;
+            <span class="code-comment">// standard double</span><br />
+            <span class="line-number">3</span><br />
+            <span class="line-number">4</span
+            ><span class="code-keyword">short int</span> small = -<span
+              class="code-number"
+              >100</span
+            >; <span class="code-comment">// smaller int</span><br />
+            <span class="line-number">5</span
+            ><span class="code-keyword">unsigned int</span> count =
+            <span class="code-number">25</span>;
+            <span class="code-comment">// only positive int</span><br />
+            <span class="line-number">6</span
+            ><span class="code-keyword">long int</span> big =
+            <span class="code-number">1234567890</span>;
+            <span class="code-comment">// larger int</span><br />
+            <span class="line-number">7</span
+            ><span class="code-keyword">long long int</span> veryBig =
+            <span class="code-number">9223372036854775807</span>;
+            <span class="code-comment">// very large int</span><br />
+            <span class="line-number">8</span
+            ><span class="code-keyword">unsigned long long int</span> huge =
+            <span class="code-number">18446744073709551615U</span>;
+            <span class="code-comment">// very large, only positive</span><br />
+            <span class="line-number">9</span
+            ><span class="code-keyword">long double</span> precise =
+            <span class="code-number">3.141592653589793238L</span>;
+            <span class="code-comment">// extended precision</span><br />
+            <span class="line-number">10</span><br />
+            <span class="line-number">11</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Normal int: %d\n"</span
+            >, normalInt);<br />
+            <span class="line-number">12</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Normal double: %lf\n"</span
+            >, normalDouble);<br />
+            <span class="line-number">13</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Small: %hd\n"</span
+            >, small);<br />
+            <span class="line-number">14</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Count: %u\n"</span
+            >, count);<br />
+            <span class="line-number">15</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Big: %ld\n"</span
+            >, big);<br />
+            <span class="line-number">16</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Very Big: %lld\n"</span
+            >, veryBig);<br />
+            <span class="line-number">17</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Huge: %llu\n"</span
+            >, huge);<br />
+            <span class="line-number">18</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Precise: %Lf\n"</span
+            >, precise);
+          </div>
+
+          <div class="output-preview">
+            Normal int: 1000<br />
+            Normal double: 3.140000<br />
+            Small: -100<br />
+            Count: 25<br />
+            Big: 1234567890<br />
+            Very Big: 9223372036854775807<br />
+            Huge: 18446744073709551615<br />
+            Precise: 3.141593
+          </div>
+
+          <div class="tip-box">
+            <div class="tip-title">
+              <span class="tip-icon">💡</span>
+              Usage Note
+            </div>
+            <p>
+              These extended types are mostly used when you need very specific
+              control over memory usage or number ranges.
+            </p>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">
+              <span class="note-icon">💡</span>
+              Note
+            </div>
+            <p>
+              For everyday programming, int, float, double, and char are usually
+              enough.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">4/6</div>
+      </div>
+
+      <!-- Slide 5: Check Size -->
+      <div class="slide" id="slide5">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Check Size</h2>
+          <p>
+            *The exact sizes depend on your system and compiler. Remember that
+            you can check them with the sizeof operator:
+          </p>
+
+          <div class="code-block">
+            <span class="line-number">1</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of int: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >int</span
+            >));<br />
+            <span class="line-number">2</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of double: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >double</span
+            >));<br />
+            <span class="line-number">3</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of short int: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >short int</span
+            >));<br />
+            <span class="line-number">4</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of unsigned int: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >unsigned int</span
+            >));<br />
+            <span class="line-number">5</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of long int: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >long int</span
+            >));<br />
+            <span class="line-number">6</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of long long int: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >long long int</span
+            >));<br />
+            <span class="line-number">7</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of unsigned long long int: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >unsigned long long int</span
+            >));<br />
+            <span class="line-number">8</span
+            ><span class="code-function">printf</span>(<span class="code-string"
+              >"Size of long double: %zu bytes\n"</span
+            >, <span class="code-keyword">sizeof</span>(<span
+              class="code-keyword"
+              >long double</span
+            >));
+          </div>
+
+          <div class="output-preview">
+            Size of int: 4 bytes<br />
+            Size of double: 8 bytes<br />
+            Size of short int: 2 bytes<br />
+            Size of unsigned int: 4 bytes<br />
+            Size of long int: 8 bytes<br />
+            Size of long long int: 8 bytes<br />
+            Size of unsigned long long int: 8 bytes<br />
+            Size of long double: 16 bytes
+          </div>
+
+          <div class="size-check">
+            <div class="size-box">
+              <div class="size-type">int</div>
+              <div class="size-value">4 bytes</div>
+            </div>
+            <div class="size-box">
+              <div class="size-type">short int</div>
+              <div class="size-value">2 bytes</div>
+            </div>
+            <div class="size-box">
+              <div class="size-type">long int</div>
+              <div class="size-value">8 bytes</div>
+            </div>
+            <div class="size-box">
+              <div class="size-type">long long int</div>
+              <div class="size-value">8 bytes</div>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            <div class="tip-title">
+              <span class="tip-icon">💡</span>
+              Tip
+            </div>
+            <p>
+              When you really need exact control over the size of your numbers,
+              you can use the fixed-width types, which you will learn about
+              later.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">5/6</div>
+      </div>
+
+      <!-- Slide 6: Summary -->
+      <div class="slide" id="slide6">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Summary</h2>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">💼</div>
+              <h3>Real-Life Example</h3>
+              <p>Combining different data types</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔧</div>
+              <h3>Extended Types</h3>
+              <p>short, long, unsigned modifiers</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📏</div>
+              <h3>Size Checking</h3>
+              <p>Using sizeof operator</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💡</div>
+              <h3>Practical Usage</h3>
+              <p>Basic types for everyday programming</p>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <h3 style="color: white; margin-bottom: 20px">
+              Key Points to Remember
+            </h3>
+            <div
+              class="component-card"
+              style="
+                background-color: rgba(255, 255, 255, 0.1);
+                margin-bottom: 15px;
+              "
+            >
+              <div class="component-icon" style="color: white">💼</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Real-Life Applications
+                </div>
+                <p style="color: white">
+                  Different data types work together to solve practical problems
+                </p>
+              </div>
+            </div>
+            <div
+              class="component-card"
+              style="
+                background-color: rgba(255, 255, 255, 0.1);
+                margin-bottom: 15px;
+              "
+            >
+              <div class="component-icon" style="color: white">🔧</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Extended Types
+                </div>
+                <p style="color: white">
+                  short, long, unsigned provide control over size and range
+                </p>
+              </div>
+            </div>
+            <div
+              class="component-card"
+              style="
+                background-color: rgba(255, 255, 255, 0.1);
+                margin-bottom: 15px;
+              "
+            >
+              <div class="component-icon" style="color: white">📏</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Size Variability
+                </div>
+                <p style="color: white">
+                  Type sizes can vary between systems and compilers
+                </p>
+              </div>
+            </div>
+            <div
+              class="component-card"
+              style="background-color: rgba(255, 255, 255, 0.1)"
+            >
+              <div class="component-icon" style="color: white">💡</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Practical Approach
+                </div>
+                <p style="color: white">
+                  For everyday programming, basic types are usually sufficient
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-box" style="margin-top: 30px">
+            <div class="note-title">
+              <span class="note-icon">📚</span>
+              For Now
+            </div>
+            <p>
+              This page is just to show you that C has other extended types, but
+              for now we will keep focusing on the basic types (int, float,
+              double, char) in this tutorial.
+            </p>
+          </div>
+
+          <div style="margin-top: 30px; font-size: 1.3rem">
+            <span class="emoji">🙏</span> Thank you for your attention!
+            <span class="emoji">👋</span>
+          </div>
+        </div>
+        <div class="slide-number">6/6</div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide('slide1')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide2')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide3')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide4')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide5')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide6')"></div>
+    </div>
+
+    <script>
+      // Function to scroll to a specific slide
+      function scrollToSlide(slideId) {
+        document.getElementById(slideId).scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update active navigation dot based on scroll position
+      window.addEventListener("scroll", function () {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      });
+
+      // Add keyboard navigation
+      document.addEventListener("keydown", function (e) {
+        const slides = document.querySelectorAll(".slide");
+        const currentSlide = Array.from(slides).findIndex((slide) => {
+          const rect = slide.getBoundingClientRect();
+          return (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          );
+        });
+
+        if (e.key === "ArrowDown" && currentSlide < slides.length - 1) {
+          scrollToSlide(`slide${currentSlide + 2}`);
+        } else if (e.key === "ArrowUp" && currentSlide > 0) {
+          scrollToSlide(`slide${currentSlide}`);
+        }
+      });
+    </script>
+  </body>
+</html>

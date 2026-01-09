@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Error Handling</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .error-box {
+        background-color: #ffebee;
+        border-left: 4px solid var(--accent-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .error-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        border-left: 5px solid var(--accent-color);
+      }
+
+      .error-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .error-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: var(--accent-color);
+        flex-shrink: 0;
+      }
+
+      .error-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--accent-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .flow-diagram {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .flow-step {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px;
+        width: 180px;
+        text-align: center;
+      }
+
+      .flow-arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 5px;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .flow-diagram {
+          flex-direction: column;
+        }
+        .flow-arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/c-error-handling-title/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">
+            C Error Handling <span class="emoji">⚠️</span>
+          </h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Detecting and Responding to Problems in Your C Programs
+          </p>
+          <div class="feature-card" style="margin-top: 40px">
+            <div class="feature-icon">🔧</div>
+            <h3>What We'll Cover</h3>
+            <ul class="point-list" style="text-align: left">
+              <li>What is error handling and why it's important</li>
+              <li>Using return values to detect errors</li>
+              <li>
+                Getting detailed error information with perror() and strerror()
+              </li>
+              <li>Common error codes and how to use them</li>
+              <li>Using exit() to stop the program</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">1/11</div>
+      </div>
+
+      <!-- Slide 2: Introduction -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/error-handling-intro/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Error Handling in C <span class="emoji">⚠️</span></h2>
+          <div class="card">
+            <h3>What is Error Handling?</h3>
+            <p>
+              Error handling lets you detect and respond to problems in your
+              program, like a file that can't be opened or memory that can't be
+              allocated, so your program doesn't crash or behave unexpectedly.
+            </p>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">🔍</div>
+            <div class="application-title">C vs Other Languages</div>
+            <div class="application-desc">
+              Unlike some languages, C does not have built-in exception handling
+              (like try/catch). Instead, C uses return values, global error
+              codes, and helper functions like perror() and strerror().
+            </div>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>Error Occurs</p>
+              <p>File not found</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Detect Error</p>
+              <p>Check return value</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Handle Error</p>
+              <p>Print message/exit</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">2/11</div>
+      </div>
+
+      <!-- Slide 3: Using Return Values -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/return-values/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Using Return Values <span class="emoji">🔙</span></h2>
+          <div class="card">
+            <h3>Detecting Errors with Return Values</h3>
+            <p>
+              In the previous chapter, you learned that functions like fopen()
+              return NULL when something goes wrong.
+            </p>
+            <p>
+              You can check for NULL using an if statement to detect and handle
+              errors before your program crashes.
+            </p>
+          </div>
+          <div class="error-card">
+            <div class="error-title">
+              <span class="error-icon">📁</span>
+              Example: fopen() fails
+            </div>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;FILE *fptr =
+              <span class="code-function">fopen</span>(<span class="code-string"
+                >"nothing.txt"</span
+              >, <span class="code-string">"r"</span>);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (fptr == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Error opening file.\\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">fclose</span>(fptr);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <div class="error-box">
+              Result:<br />
+              Error opening file.
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">3/11</div>
+      </div>
+
+      <!-- Slide 4: Get More Details with perror() -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/perror-function/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Get More Details with perror() <span class="emoji">📝</span></h2>
+          <div class="card">
+            <h3>Using perror() for Detailed Error Messages</h3>
+            <p>
+              If you want more details about what went wrong, you can use the
+              perror() function.
+            </p>
+            <p>
+              It prints a custom error message followed by a description of the
+              last error that occurred:
+            </p>
+          </div>
+          <div class="error-card">
+            <div class="error-title">
+              <span class="error-icon">📁</span>
+              Example: perror() with fopen()
+            </div>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;FILE *f =
+              <span class="code-function">fopen</span>(<span class="code-string"
+                >"nothing.txt"</span
+              >, <span class="code-string">"r"</span>);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (f == NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">perror</span
+              >(<span class="code-string">"Error opening file"</span>);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">fclose</span>(f);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <div class="error-box">
+              Result:<br />
+              Error opening file: No such file or directory
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Key Advantage</div>
+              <p>
+                perror() provides more specific information about what went
+                wrong, making debugging easier.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">4/11</div>
+      </div>
+
+      <!-- Slide 5: Using strerror() and errno -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/strerror-errno/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Using strerror() and errno <span class="emoji">🔍</span></h2>
+          <div class="card">
+            <h3>Accessing Error Codes</h3>
+            <p>
+              errno is a global variable that stores the error code from the
+              last failed operation. You can include &lt;errno.h&gt; to access
+              it, and strerror(errno) will convert the error code into a
+              readable message:
+            </p>
+          </div>
+          <div class="error-card">
+            <div class="error-title">
+              <span class="error-icon">📁</span>
+              Example: strerror()
+            </div>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;errno.h&gt;</span><br />
+              <span class="code-comment">#include &lt;string.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;FILE *f =
+              <span class="code-function">fopen</span>(<span class="code-string"
+                >"nothing.txt"</span
+              >, <span class="code-string">"r"</span>);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (f == NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Error: %s\n"</span>,
+              <span class="code-function">strerror</span>(errno));<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">fclose</span>(f);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <div class="error-box">
+              Result:<br />
+              Error: No such file or directory
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">5/11</div>
+      </div>
+
+      <!-- Slide 6: Common Error Codes -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/error-codes/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Common Error Codes <span class="emoji">🔢</span></h2>
+          <div class="card">
+            <h3>Error Constants in &lt;errno.h&gt;</h3>
+            <p>
+              Error constants are defined in &lt;errno.h&gt;. You can compare
+              errno to them to detect specific issues:
+            </p>
+          </div>
+          <div class="table-container">
+            <table>
+              <tr>
+                <th>Error Code</th>
+                <th>Meaning</th>
+              </tr>
+              <tr>
+                <td>ENOENT</td>
+                <td>No such file or directory</td>
+              </tr>
+              <tr>
+                <td>EACCES</td>
+                <td>Permission denied</td>
+              </tr>
+              <tr>
+                <td>ENOMEM</td>
+                <td>Not enough memory</td>
+              </tr>
+              <tr>
+                <td>EINVAL</td>
+                <td>Invalid argument</td>
+              </tr>
+            </table>
+          </div>
+          <div class="error-card">
+            <div class="error-title">
+              <span class="error-icon">📁</span>
+              Example: Custom message for ENOENT
+            </div>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;errno.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;FILE *f =
+              <span class="code-function">fopen</span>(<span class="code-string"
+                >"nothing.txt"</span
+              >, <span class="code-string">"r"</span>);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (f == NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span>
+              (errno == ENOENT) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function"
+                >printf</span
+              >(<span class="code-string">"The file was not found.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;}
+              <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function"
+                >printf</span
+              >(<span class="code-string"
+                >"Some other file error occurred.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">fclose</span>(f);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <div class="error-box">
+              Result:<br />
+              The file was not found.
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">6/11</div>
+      </div>
+
+      <!-- Slide 7: Using exit() to Stop the Program -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/exit-function/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            Using exit() to Stop the Program <span class="emoji">🚪</span>
+          </h2>
+          <div class="card">
+            <h3>Terminating the Program on Error</h3>
+            <p>
+              If you want to stop the program immediately when an error occurs,
+              you can use exit(). It lets you return a status code to the
+              operating system.
+            </p>
+            <p>
+              Exit codes help signal whether the program finished successfully
+              or with an error:
+            </p>
+            <ul class="point-list">
+              <li>0 means success</li>
+              <li>Non-zero values (like 1 or EXIT_FAILURE) indicate errors</li>
+            </ul>
+          </div>
+          <div class="error-card">
+            <div class="error-title">
+              <span class="error-icon">📁</span>
+              Example: Using exit() on error
+            </div>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;stdlib.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;FILE *f =
+              <span class="code-function">fopen</span>(<span class="code-string"
+                >"nothing.txt"</span
+              >, <span class="code-string">"r"</span>);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (f == NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Failed to open file.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">exit</span
+              >(1);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">fclose</span>(f);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <div class="error-box">
+              Result:<br />
+              Failed to open file.
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">7/11</div>
+      </div>
+
+      <!-- Slide 8: Common Exit Status Codes -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/exit-codes/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Common Exit Status Codes <span class="emoji">🔢</span></h2>
+          <div class="card">
+            <h3>Exit Code Meanings</h3>
+            <p>
+              Exit codes provide information about how a program terminated:
+            </p>
+          </div>
+          <div class="table-container">
+            <table>
+              <tr>
+                <th>Code</th>
+                <th>Meaning</th>
+              </tr>
+              <tr>
+                <td>0</td>
+                <td>Success - the program completed normally</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Error - something went wrong</td>
+              </tr>
+              <tr>
+                <td>EXIT_SUCCESS</td>
+                <td>Same as 0 (defined in &lt;stdlib.h&gt;)</td>
+              </tr>
+              <tr>
+                <td>EXIT_FAILURE</td>
+                <td>
+                  Same as a non-zero error code (also in &lt;stdlib.h&gt;)
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Tip</div>
+              <p>
+                You can use EXIT_SUCCESS and EXIT_FAILURE instead of numbers to
+                make your code more readable.
+              </p>
+            </div>
+          </div>
+          <div class="error-card">
+            <div class="error-title">
+              <span class="error-icon">📁</span>
+              Example: Using EXIT_FAILURE and EXIT_SUCCESS
+            </div>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;stdlib.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;FILE *f =
+              <span class="code-function">fopen</span>(<span class="code-string"
+                >"nothing.txt"</span
+              >, <span class="code-string">"r"</span>);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (f == NULL) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">perror</span
+              >(<span class="code-string">"Could not open nothing.txt"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">exit</span
+              >(EXIT_FAILURE);
+              <span class="code-comment">// More readable than exit(1)</span
+              ><br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">fclose</span>(f);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span>
+              EXIT_SUCCESS;<br />
+              }
+            </div>
+            <div class="error-box">
+              Result:<br />
+              Could not open nothing.txt: No such file or directory
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">8/11</div>
+      </div>
+
+      <!-- Slide 9: Error Handling Best Practices -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/error-best-practices/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Error Handling Best Practices <span class="emoji">✅</span></h2>
+          <div class="card">
+            <h3>Writing Robust Code</h3>
+            <p>
+              Good error handling is essential for creating reliable programs.
+              Here are some best practices to follow:
+            </p>
+          </div>
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h4>Check Return Values</h4>
+              <p>Always check return values from functions that can fail</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📝</div>
+              <h4>Provide Context</h4>
+              <p>
+                Include meaningful error messages that explain what went wrong
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔄</div>
+              <h4>Recover When Possible</h4>
+              <p>Try to recover from errors instead of always exiting</p>
+            </div>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">💡</div>
+            <div class="application-title">Defensive Programming</div>
+            <div class="application-desc">
+              Anticipate potential errors and handle them gracefully before they
+              happen. This approach makes your code more robust and
+              user-friendly.
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">⚠️</div>
+            <div class="component-details">
+              <div class="component-name">Important Note</div>
+              <p>
+                Ignoring errors can lead to unexpected behavior or crashes.
+                Always handle potential error conditions in your code.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">9/11</div>
+      </div>
+
+      <!-- Slide 10: Error Handling in Real Applications -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/error-real-apps/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            Error Handling in Real Applications <span class="emoji">🏗️</span>
+          </h2>
+          <div class="card">
+            <h3>Practical Error Handling Strategies</h3>
+            <p>
+              In real-world applications, error handling becomes even more
+              important. Here are some strategies for implementing effective
+              error handling:
+            </p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>Detect</p>
+              <p>Check return values</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Report</p>
+              <p>Log or notify</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Recover</p>
+              <p>Try alternatives</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Fail Gracefully</p>
+              <p>Clean up resources</p>
+            </div>
+          </div>
+          <div class="error-card">
+            <div class="error-title">
+              <span class="error-icon">💾</span>
+              Example: Memory Allocation Error Handling
+            </div>
+            <div class="code-block">
+              <span class="code-keyword">int</span> *array = (<span
+                class="code-keyword"
+                >int</span
+              >*)<span class="code-function">malloc</span>(size *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br /><br />
+
+              <span class="code-keyword">if</span> (array == NULL) {<br />
+              &nbsp;&nbsp;<span class="code-comment">// Log the error</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-function">fprintf</span>(stderr,
+              <span class="code-string">"Failed to allocate %zu bytes\n"</span>,
+              size * <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment"
+                >// Try a smaller allocation</span
+              ><br />
+              &nbsp;&nbsp;array = (<span class="code-keyword">int</span>*)<span
+                class="code-function"
+                >malloc</span
+              >((size/2) * <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (array == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"
+                >// Exit gracefully</span
+              ><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">fprintf</span
+              >(stderr,
+              <span class="code-string"
+                >"Memory allocation completely failed\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">exit</span
+              >(EXIT_FAILURE);<br />
+              &nbsp;&nbsp;}<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">10/11</div>
+      </div>
+
+      <!-- Slide 11: Summary -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/error-handling-summary/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Summary <span class="emoji">📝</span></h2>
+          <div class="summary-box">
+            <h3>Key Takeaways</h3>
+            <ul class="point-list" style="color: white">
+              <li>Many C functions return NULL when something goes wrong</li>
+              <li>Use perror() to print a message about the error</li>
+              <li>Use strerror(errno) to get the error message as a string</li>
+              <li>errno stores the error code from the last failed action</li>
+              <li>
+                You can compare errno to values like ENOENT (file not found) or
+                ENOMEM (not enough memory)
+              </li>
+              <li>Use exit() to stop the program early if there's an error</li>
+            </ul>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">💡</div>
+            <div class="application-title">Important Tip</div>
+            <div class="application-desc">
+              Always check for errors after file operations, memory allocation,
+              and system calls. Ignoring errors can lead to unexpected behavior
+              or crashes.
+            </div>
+          </div>
+          <div class="grid-container" style="margin-top: 30px">
+            <div class="feature-card">
+              <div class="feature-icon">✅</div>
+              <h4>Do</h4>
+              <p>Check return values</p>
+              <p>Use meaningful error messages</p>
+              <p>Clean up resources before exiting</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">❌</div>
+              <h4>Don't</h4>
+              <p>Ignore potential errors</p>
+              <p>Use generic error messages</p>
+              <p>Exit without releasing resources</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">11/11</div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(8)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(9)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(10)"></div>
+    </div>
+
+    <script>
+      function scrollToSlide(index) {
+        const slides = document.querySelectorAll(".slide");
+        slides[index].scrollIntoView({ behavior: "smooth" });
+
+        // Update active navigation dot
+        const navDots = document.querySelectorAll(".nav-dot");
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[index].classList.add("active");
+      }
+
+      // Update active navigation dot based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[currentSlide].classList.add("active");
+      });
+    </script>
+  </body>
+</html>

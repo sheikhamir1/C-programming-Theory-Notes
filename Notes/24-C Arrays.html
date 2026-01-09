@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Arrays - Interactive Presentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .gui-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .gui-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .gui-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .gui-details {
+        flex: 1;
+      }
+
+      .gui-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .embedded-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .embedded-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .embedded-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--success-color);
+        flex-shrink: 0;
+      }
+
+      .embedded-details {
+        flex: 1;
+      }
+
+      .embedded-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .adobe-products {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+      }
+
+      .adobe-product {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+        width: 30%;
+      }
+
+      .adobe-product:hover {
+        transform: translateY(-10px);
+        background-color: #e9ecef;
+      }
+
+      .adobe-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+      }
+
+      .adobe-name {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .output-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .type-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .pointer-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .memory-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 10px;
+      }
+
+      .memory-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .memory-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      .memory-label {
+        min-width: 150px;
+        text-align: right;
+        padding-right: 15px;
+        font-weight: 600;
+      }
+
+      .memory-value {
+        background-color: var(--light-bg);
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        padding: 8px 15px;
+        min-width: 120px;
+        text-align: center;
+      }
+
+      .array-visual {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .array-box {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px;
+        text-align: center;
+        min-width: 80px;
+        font-family: monospace;
+        position: relative;
+      }
+
+      .array-index {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 0.8rem;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .matrix-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .matrix-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+      }
+
+      .matrix-cell {
+        background-color: var(--light-bg);
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        padding: 10px;
+        margin: 0 5px;
+        text-align: center;
+        min-width: 50px;
+        font-family: monospace;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .adobe-products {
+          flex-direction: column;
+          align-items: center;
+        }
+        .adobe-product {
+          width: 80%;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(8)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(9)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(10)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(11)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(12)"></div>
+    </div>
+
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide" id="slide-0">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/c-arrays/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">C Arrays <span class="emoji">📚</span></h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Storing multiple values in a single variable
+            <span class="emoji">📦</span>
+          </p>
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              Arrays are used to store multiple values in a single variable,
+              instead of declaring separate variables for each value.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">1/13</div>
+      </div>
+
+      <!-- Slide 2: Introduction to Arrays -->
+      <div class="slide" id="slide-1">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/arrays-introduction/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Arrays <span class="emoji">📚</span></h2>
+          <p>
+            To create an array, define the data type (like int) and specify the
+            name of the array followed by square brackets [].
+          </p>
+
+          <div class="card">
+            <h3>Creating an Array <span class="emoji">📝</span></h3>
+            <p>
+              To insert values to it, use a comma-separated list inside curly
+              braces, and make sure all values are of the same data type:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >25</span
+              >, <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">100</span>};
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Array Structure</span>
+            </div>
+            <p>
+              We have now created a variable that holds an array of four
+              integers.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">2/13</div>
+      </div>
+
+      <!-- Slide 3: Accessing Elements -->
+      <div class="slide" id="slide-2">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-access/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Accessing Elements of an Array <span class="emoji">🔍</span></h2>
+          <p>To access an array element, refer to its index number.</p>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Indexing</span>
+            </div>
+            <p>
+              Array indexes start with 0: [0] is the first element. [1] is the
+              second element, etc.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>
+              This statement accesses the value of the first element [0] in
+              myNumbers:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >25</span
+              >, <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">100</span>};<br /><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d"</span
+              >, myNumbers[<span class="code-number">0</span>]);<br /><br />
+              <span class="code-comment">// Outputs 25</span>
+            </div>
+            <div class="output-box"><strong>Output:</strong> 25</div>
+          </div>
+        </div>
+        <div class="slide-number">3/13</div>
+      </div>
+
+      <!-- Slide 4: Changing Elements -->
+      <div class="slide" id="slide-3">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-change/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Change an Array Element <span class="emoji">✏️</span></h2>
+          <p>
+            To change the value of a specific element, refer to the index
+            number:
+          </p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >25</span
+              >, <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">100</span>};<br /><br />
+              myNumbers[<span class="code-number">0</span>] =
+              <span class="code-number">33</span>;<br /><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d"</span
+              >, myNumbers[<span class="code-number">0</span>]);<br /><br />
+              <span class="code-comment">// Now outputs 33 instead of 25</span>
+            </div>
+            <div class="output-box"><strong>Output:</strong> 33</div>
+          </div>
+        </div>
+        <div class="slide-number">4/13</div>
+      </div>
+
+      <!-- Slide 5: Set Array Size -->
+      <div class="slide" id="slide-4">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-size/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Set Array Size <span class="emoji">📏�️</span></h2>
+          <p>
+            Another common way to create arrays is to specify the size of the
+            array, and add elements later:
+          </p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-comment"
+                >// Declare an array of four integers:</span
+              ><br />
+              <span class="code-keyword">int</span> myNumbers[<span
+                class="code-number"
+                >4</span
+              >];<br /><br />
+              <span class="code-comment">// Add elements</span><br />
+              myNumbers[<span class="code-number">0</span>] =
+              <span class="code-number">25</span>;<br />
+              myNumbers[<span class="code-number">1</span>] =
+              <span class="code-number">50</span>;<br />
+              myNumbers[<span class="code-number">2</span>] =
+              <span class="code-number">75</span>;<br />
+              myNumbers[<span class="code-number">3</span>] =
+              <span class="code-number">100</span>;
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Memory Management</span>
+            </div>
+            <p>
+              Using this method, you should know the number of array elements in
+              advance, in order for the program to store enough memory.
+            </p>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">⚠️</span>
+              <span>Important Note</span>
+            </div>
+            <p>
+              You are not able to change the size of an array after creation.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">5/13</div>
+      </div>
+
+      <!-- Slide 6: Avoid Mixing Data Types -->
+      <div class="slide" id="slide-5">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/data-types/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Avoid Mixing Data Types <span class="emoji">⚠️</span></h2>
+          <p>
+            It is important to note that all elements in an array must be of the
+            same data type.
+          </p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>
+              This means you cannot mix different types of values, like integers
+              and floating point numbers, in the same array:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myArray[] = {<span
+                class="code-number"
+                >25</span
+              >, <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">3.15</span>,
+              <span class="code-number">5.99</span>};
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Type Conversion</span>
+            </div>
+            <p>
+              In the example above, the values 3.15 and 5.99 will be truncated
+              to 3 and 5. In some cases it might also result in an error, so it
+              is important to always make sure that the elements in an array are
+              of the same type.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">6/13</div>
+      </div>
+
+      <!-- Slide 7: Get Array Size -->
+      <div class="slide" id="slide-6">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-size-calculation/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Get Array Size <span class="emoji">📏�️</span></h2>
+          <p>To get the size of an array, you can use the sizeof operator:</p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >10</span
+              >, <span class="code-number">25</span>,
+              <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">100</span>};<br /><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%zu"</span
+              >, <span class="code-keyword">sizeof</span>(myNumbers));
+              <span class="code-comment">// Prints 20</span>
+            </div>
+            <div class="output-box"><strong>Output:</strong> 20</div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">❓</span>
+              <span>Why 20 instead of 5?</span>
+            </div>
+            <p>
+              You learned from the Data Types chapter that an int type is
+              usually 4 bytes, so from the example above, 4 x 5 (4 bytes x 5
+              elements) = 20 bytes.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Memory Management <span class="emoji">💾</span></h3>
+            <p>
+              Knowing the memory size of an array is great when you are working
+              with larger programs that require good memory management.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">7/13</div>
+      </div>
+
+      <!-- Slide 8: Get Number of Elements -->
+      <div class="slide" id="slide-7">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-element-count/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Get the Number of Elements <span class="emoji">🔢</span></h2>
+          <p>
+            If you want to find out how many elements an array has, you can use
+            this formula, which divides the total size of the array by the size
+            of one element:
+          </p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >10</span
+              >, <span class="code-number">25</span>,
+              <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">100</span>};<br /><br />
+              <span class="code-keyword">int</span> length =
+              <span class="code-keyword">sizeof</span>(myNumbers) /
+              <span class="code-keyword">sizeof</span>(myNumbers[<span
+                class="code-number"
+                >0</span
+              >]);<br /><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d"</span
+              >, length); <span class="code-comment">// Prints 5</span>
+            </div>
+            <div class="output-box"><strong>Output:</strong> 5</div>
+          </div>
+
+          <div class="card">
+            <h3>Universal Formula <span class="emoji">🔄</span></h3>
+            <p>The sizeof formula works for arrays of any type and any size:</p>
+            <div class="code-block">
+              <span class="code-keyword">double</span> myValues[] = {<span
+                class="code-number"
+                >1.1</span
+              >, <span class="code-number">2.2</span>,
+              <span class="code-number">3.3</span>};<br /><br />
+              <span class="code-keyword">int</span> length =
+              <span class="code-keyword">sizeof</span>(myValues) /
+              <span class="code-keyword">sizeof</span>(myValues[<span
+                class="code-number"
+                >0</span
+              >]);<br /><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d"</span
+              >, length); <span class="code-comment">// Prints 3</span>
+            </div>
+            <div class="output-box"><strong>Output:</strong> 3</div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Flexible Loops</span>
+            </div>
+            <p>
+              In the next chapter, you will see how to use this formula to make
+              loops that automatically adapt to the array size.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">8/13</div>
+      </div>
+
+      <!-- Slide 9: Loop Through an Array -->
+      <div class="slide" id="slide-8">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-loop/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Loop Through an Array <span class="emoji">🔄</span></h2>
+          <p>
+            You can use a for loop to go through the elements of an array by
+            writing the size of the array in the loop condition (in this example
+            the array has 4 elements, so we use i < 4). However, this is not
+            ideal, since it will only work for arrays of a specified size.
+          </p>
+
+          <div class="card">
+            <h3>Basic Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >25</span
+              >, <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">100</span>};<br /><br />
+              <span class="code-keyword">int</span> i;<br /><br />
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i <
+              <span class="code-number">4</span>; i++) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, myNumbers[i]);<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              25<br />
+              50<br />
+              75<br />
+              100
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Making Better Loops <span class="emoji">⚡</span></h3>
+            <p>
+              In the previous chapter, you learned how to calculate the number
+              of elements in an array using the sizeof formula. Now we can use
+              that to write loops that work for arrays of any size. This is more
+              flexible and sustainable:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >25</span
+              >, <span class="code-number">50</span>,
+              <span class="code-number">75</span>,
+              <span class="code-number">100</span>};<br /><br />
+              <span class="code-keyword">int</span> length =
+              <span class="code-keyword">sizeof</span>(myNumbers) /
+              <span class="code-keyword">sizeof</span>(myNumbers[<span
+                class="code-number"
+                >0</span
+              >]);<br /><br />
+              <span class="code-keyword">int</span> i;<br /><br />
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i < length; i++) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, myNumbers[i]);<br />
+              }
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Best Practice</span>
+            </div>
+            <p>
+              Summary: Always use the sizeof formula when looping through
+              arrays. It makes your loops adapt to the array size automatically.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">9/13</div>
+      </div>
+
+      <!-- Slide 10: Real-Life Examples -->
+      <div class="slide" id="slide-9">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-real-life/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Real-Life Examples <span class="emoji">🌍</span></h2>
+          <p>
+            To demonstrate practical examples of using arrays, let's create
+            programs that work with collections of data:
+          </p>
+
+          <div class="card">
+            <h3>Calculate Average Age <span class="emoji">👥</span></h3>
+            <p>
+              This example creates a program that calculates the average of
+              different ages:
+            </p>
+            <div class="code-block">
+              <span class="code-comment"
+                >// An array storing different ages</span
+              ><br />
+              <span class="code-keyword">int</span> ages[] = {<span
+                class="code-number"
+                >20</span
+              >, <span class="code-number">22</span>,
+              <span class="code-number">18</span>,
+              <span class="code-number">35</span>,
+              <span class="code-number">48</span>,
+              <span class="code-number">26</span>,
+              <span class="code-number">87</span>,
+              <span class="code-number">70</span>};<br /><br />
+              <span class="code-keyword">float</span> avg, sum =
+              <span class="code-number">0</span>;<br />
+              <span class="code-keyword">int</span> i;<br /><br />
+              <span class="code-comment">// Get the length of the array</span
+              ><br />
+              <span class="code-keyword">int</span> length =
+              <span class="code-keyword">sizeof</span>(ages) /
+              <span class="code-keyword">sizeof</span>(ages[<span
+                class="code-number"
+                >0</span
+              >]);<br /><br />
+              <span class="code-comment"
+                >// Loop through the elements of the array</span
+              ><br />
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i < length; i++) {<br />
+              &nbsp;&nbsp;sum += ages[i];<br />
+              }<br /><br />
+              <span class="code-comment"
+                >// Calculate the average by dividing the sum by the
+                length</span
+              ><br />
+              avg = sum / length;<br /><br />
+              <span class="code-comment">// Print the average</span><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"The average age is: %.2f"</span
+              >, avg);
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong> The average age is: 39.57
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Find Lowest Age <span class="emoji">🔍</span></h3>
+            <p>
+              This example creates a program that finds the lowest age among
+              different ages:
+            </p>
+            <div class="code-block">
+              <span class="code-comment"
+                >// An array storing different ages</span
+              ><br />
+              <span class="code-keyword">int</span> ages[] = {<span
+                class="code-number"
+                >20</span
+              >, <span class="code-number">22</span>,
+              <span class="code-number">18</span>,
+              <span class="code-number">35</span>,
+              <span class="code-number">48</span>,
+              <span class="code-number">26</span>,
+              <span class="code-number">87</span>,
+              <span class="code-number">70</span>};<br /><br />
+              <span class="code-keyword">int</span> i;<br /><br />
+              <span class="code-comment">// Get the length of the array</span
+              ><br />
+              <span class="code-keyword">int</span> length =
+              <span class="code-keyword">sizeof</span>(ages) /
+              <span class="code-keyword">sizeof</span>(ages[<span
+                class="code-number"
+                >0</span
+              >]);<br /><br />
+              <span class="code-comment"
+                >// Create a variable and assign the first array element of ages
+                to it</span
+              ><br />
+              <span class="code-keyword">int</span> lowestAge = ages[<span
+                class="code-number"
+                >0</span
+              >];<br /><br />
+              <span class="code-comment"
+                >// Loop through the elements of the ages array to find the
+                lowest age</span
+              ><br />
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i < length; i++) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (lowestAge >
+              ages[i]) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;lowestAge = ages[i];<br />
+              &nbsp;&nbsp;}<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong> 18 (the lowest age in the array)
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Filtering Numbers <span class="emoji">🔍</span></h3>
+            <p>
+              In this example, we go through a list of numbers. We skip negative
+              values, but stop the loop completely if we find a zero:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNumbers[] = {<span
+                class="code-number"
+                >3</span
+              >, <span class="code-number">-1</span>,
+              <span class="code-number">7</span>,
+              <span class="code-number">0</span>,
+              <span class="code-number">9</span>};<br /><br />
+              <span class="code-keyword">int</span> length =
+              <span class="code-keyword">sizeof</span>(myNumbers) /
+              <span class="code-keyword">sizeof</span>(myNumbers[<span
+                class="code-number"
+                >0</span
+              >]);<br /><br />
+              <span class="code-keyword">int</span> i;<br /><br />
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i < length; i++) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (myNumbers[i] <
+              <span class="code-number">0</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">continue</span
+              >; <span class="code-comment">// skip negative numbers</span
+              ><br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (myNumbers[i] ==
+              <span class="code-number">0</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>;
+              <span class="code-comment">// stop loop when zero is found</span
+              ><br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, myNumbers[i]);<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              3<br />
+              7
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Key Concepts</span>
+            </div>
+            <ul class="point-list">
+              <li>The array contains numbers 3, -1, 7, 0, and 9</li>
+              <li>The loop processes each element in the array</li>
+              <li>When it encounters -1, the continue statement skips it</li>
+              <li>
+                When it encounters 0, the break statement stops the loop
+                completely
+              </li>
+              <li>Only 3 and 7 are printed before the loop stops</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">10/13</div>
+      </div>
+
+      <!-- Slide 11: Multidimensional Arrays -->
+      <div class="slide" id="slide-10">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/multidimensional-arrays/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Multidimensional Arrays <span class="emoji">📊</span></h2>
+          <p>
+            In the previous chapter, you learned about arrays, which is also
+            known as single dimension arrays. These are great, and something you
+            will use a lot while programming in C. However, if you want to store
+            data as a tabular form, like a table with rows and columns, you need
+            to get familiar with multidimensional arrays.
+          </p>
+
+          <div class="card">
+            <h3>Array Dimensions <span class="emoji">📐</span></h3>
+            <p>A multidimensional array is basically an array of arrays.</p>
+            <p>
+              Arrays can have any number of dimensions. In this chapter, we will
+              introduce the most common; two-dimensional arrays (2D).
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">11/13</div>
+      </div>
+
+      <!-- Slide 12: Two-Dimensional Arrays -->
+      <div class="slide" id="slide-11">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/two-dimensional-arrays/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Two-Dimensional Arrays <span class="emoji">📊</span></h2>
+          <p>
+            A 2D array is also known as a matrix (a table of rows and columns).
+          </p>
+
+          <div class="card">
+            <h3>Creating a 2D Array <span class="emoji">📝</span></h3>
+            <p>
+              To create a 2D array of integers, take a look at the following
+              example:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> matrix[<span
+                class="code-number"
+                >2</span
+              >][<span class="code-number">3</span>] = { {<span
+                class="code-number"
+                >1</span
+              >, <span class="code-number">4</span>,
+              <span class="code-number">2</span>}, {<span class="code-number"
+                >3</span
+              >, <span class="code-number">6</span>,
+              <span class="code-number">8</span>} };
+            </div>
+          </div>
+
+          <div class="matrix-container">
+            <div class="matrix-row">
+              <div class="matrix-cell">1</div>
+              <div class="matrix-cell">4</div>
+              <div class="matrix-cell">2</div>
+            </div>
+            <div class="matrix-row">
+              <div class="matrix-cell">3</div>
+              <div class="matrix-cell">6</div>
+              <div class="matrix-cell">8</div>
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Structure</span>
+            </div>
+            <p>
+              The first dimension represents the number of rows [2], while the
+              second dimension represents the number of columns [3]. The values
+              are placed in row-order, and can be visualized like this:
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">12/13</div>
+      </div>
+
+      <!-- Slide 13: Accessing Elements of a 2D Array -->
+      <div class="slide" id="slide-12">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/two-d-array-access/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            Accessing Elements of a 2D Array <span class="emoji">🔍</span>
+          </h2>
+          <p>
+            To access an element of a two-dimensional array, you must specify
+            the index number of both the row and the column.
+          </p>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Indexing</span>
+            </div>
+            <p>
+              Remember that: Array indexes start with 0: [0] is the first
+              element. [1] is the second element, etc.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>
+              This statement accesses the value of the element in the first row
+              (0) and third column (2) of the matrix array:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> matrix[<span
+                class="code-number"
+                >2</span
+              >][<span class="code-number">3</span>] = { {<span
+                class="code-number"
+                >1</span
+              >, <span class="code-number">4</span>,
+              <span class="code-number">2</span>}, {<span class="code-number"
+                >3</span
+              >, <span class="code-number">6</span>,
+              <span class="code-number">8</span>} };<br /><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d"</span
+              >, matrix[<span class="code-number">0</span>][<span
+                class="code-number"
+                >2</span
+              >]); <span class="code-comment">// Outputs 2</span>
+            </div>
+            <div class="output-box"><strong>Output:</strong> 2</div>
+          </div>
+
+          <div class="card">
+            <h3>Change Elements <span class="emoji">✏️</span></h3>
+            <p>
+              To change the value of an element, refer to the index number of
+              the element in each of the dimensions:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> matrix[<span
+                class="code-number"
+                >2</span
+              >][<span class="code-number">3</span>] = { {<span
+                class="code-number"
+                >1</span
+              >, <span class="code-number">4</span>,
+              <span class="code-number">2</span>}, {<span class="code-number"
+                >3</span
+              >, <span class="code-number">6</span>,
+              <span class="code-number">8</span>} };<br /><br />
+              matrix[<span class="code-number">0</span>][<span
+                class="code-number"
+                >0</span
+              >] = <span class="code-number">9</span>;<br /><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d"</span
+              >, matrix[<span class="code-number">0</span>][<span
+                class="code-number"
+                >0</span
+              >]);
+              <span class="code-comment">// Now outputs 9 instead of 1</span>
+            </div>
+            <div class="output-box"><strong>Output:</strong> 9</div>
+          </div>
+        </div>
+        <div class="slide-number">13/13</div>
+      </div>
+
+      <!-- Slide 14: Loop Through a 2D Array -->
+      <div class="slide" id="slide-13">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/two-d-array-loop/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Loop Through a 2D Array <span class="emoji">🔄</span></h2>
+          <p>
+            To loop through a multi-dimensional array, you need one loop for
+            each of the array's dimensions.
+          </p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>
+              The following example outputs all elements in the matrix array:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> matrix[<span
+                class="code-number"
+                >2</span
+              >][<span class="code-number">3</span>] = { {<span
+                class="code-number"
+                >1</span
+              >, <span class="code-number">4</span>,
+              <span class="code-number">2</span>}, {<span class="code-number"
+                >3</span
+              >, <span class="code-number">6</span>,
+              <span class="code-number">8</span>} };<br /><br />
+              <span class="code-keyword">int</span> i, j;<br /><br />
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i <
+              <span class="code-number">2</span>; i++) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">for</span> (j =
+              <span class="code-number">0</span>; j <
+              <span class="code-number">3</span>; j++) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"%d "</span>, matrix[i][j]);<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"\n"</span
+              >);<br />
+              &nbsp;&nbsp;}<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              1 4 2<br />
+              3 6 8
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Nested Loops</span>
+            </div>
+            <p>
+              The outer loop (i) controls the rows, while the inner loop (j)
+              controls the columns within each row.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">14/13</div>
+      </div>
+
+      <!-- Slide 15: Three-Dimensional Arrays -->
+      <div class="slide" id="slide-14">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/three-dimensional-arrays/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Three-Dimensional Arrays <span class="emoji">📊</span></h2>
+          <p>You can also declare arrays with more than two dimensions:</p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-comment"
+                >// A 3D array with 2 blocks, each with 4 rows and 3
+                columns</span
+              ><br />
+              <span class="code-keyword">int</span> example[<span
+                class="code-number"
+                >2</span
+              >][<span class="code-number">4</span>][<span class="code-number"
+                >3</span
+              >];
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Structure</span>
+            </div>
+            <p>This creates a 3D array with:</p>
+            <ul class="point-list">
+              <li>2 blocks (first index)</li>
+              <li>4 rows per block (second index)</li>
+              <li>3 columns per row (third index)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">15/13</div>
+      </div>
+
+      <!-- Slide 16: When to Use Multidimensional Arrays -->
+      <div class="slide" id="slide-15">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/multidimensional-use-cases/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            When to Use Multidimensional Arrays <span class="emoji">🎯</span>
+          </h2>
+          <p>
+            Multidimensional arrays are useful when your data is arranged in
+            rows and columns, like a table, grid, or matrix.
+          </p>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>2D Arrays</h3>
+              <p>
+                Great for storing things like scores, game boards, or
+                spreadsheets
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>3D Arrays</h3>
+              <p>
+                Can represent more complex structures like a set of tables or
+                levels in a game
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">16/13</div>
+      </div>
+
+      <!-- Slide 17: Summary -->
+      <div class="slide" id="slide-16">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/arrays-summary/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Summary <span class="emoji">📚</span></h2>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">📚</div>
+              <h3>Arrays</h3>
+              <p>Store multiple values in a single variable</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h3>Access</h3>
+              <p>Use index to access specific elements</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">✏️</div>
+              <h3>Modify</h3>
+              <p>Change values using their index</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📏�️</div>
+              <h3>Size</h3>
+              <p>Use sizeof to get total size</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🔄</div>
+              <h3>Loop</h3>
+              <p>Iterate through all elements</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Multidimensional</h3>
+              <p>Organize data in tables and matrices</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Key Points <span class="emoji">🔑</span></h3>
+            <ul class="point-list">
+              <li>Arrays store multiple values of the same type</li>
+              <li>Elements are accessed using zero-based indexing</li>
+              <li>Array size can be calculated with sizeof</li>
+              <li>
+                Loops should use the sizeof formula to adapt to array size
+              </li>
+              <li>
+                Multidimensional arrays add dimensions for complex data
+                structures
+              </li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              Arrays are fundamental data structures in C programming!
+              <span class="emoji">📚</span><br />
+              They allow you to efficiently store and manipulate collections of
+              related data.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">17/13</div>
+      </div>
+    </div>
+
+    <script>
+      // Function to scroll to a specific slide
+      function scrollToSlide(slideIndex) {
+        const slide = document.getElementById(`slide-${slideIndex}`);
+        slide.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update navigation dots based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

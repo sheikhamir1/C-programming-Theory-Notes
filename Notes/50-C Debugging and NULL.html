@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Debugging and NULL</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .error-box {
+        background-color: #ffebee;
+        border-left: 4px solid var(--accent-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .debug-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        border-left: 5px solid var(--info-color);
+      }
+
+      .debug-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .debug-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: var(--info-color);
+        flex-shrink: 0;
+      }
+
+      .debug-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--info-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .null-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        border-left: 5px solid var(--warning-color);
+      }
+
+      .null-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .null-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: var(--warning-color);
+        flex-shrink: 0;
+      }
+
+      .null-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--warning-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .flow-diagram {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .flow-step {
+        background-color: var(--light-bg);
+        border: 2px solid var(--info-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px;
+        width: 180px;
+        text-align: center;
+      }
+
+      .flow-arrow {
+        font-size: 2rem;
+        color: var(--info-color);
+        margin: 0 5px;
+      }
+
+      .pointer-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .pointer-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--warning-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--warning-color);
+        margin: 0 10px;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .flow-diagram {
+          flex-direction: column;
+        }
+        .flow-arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/c-debugging-title/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">
+            C Debugging and NULL <span class="emoji">🔍</span>
+          </h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Finding and Fixing Errors in Your C Programs
+          </p>
+          <div class="feature-card" style="margin-top: 40px">
+            <div class="feature-icon">🔧</div>
+            <h3>What We'll Cover</h3>
+            <ul class="point-list" style="text-align: left">
+              <li>What is debugging and why it's important</li>
+              <li>Common debugging techniques</li>
+              <li>Debugging with safe checks</li>
+              <li>Understanding NULL pointers</li>
+              <li>Error handling best practices</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">1/12</div>
+      </div>
+
+      <!-- Slide 2: Debugging Introduction -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/debugging-intro/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Debugging <span class="emoji">🐛</span></h2>
+          <div class="card">
+            <h3>What is Debugging?</h3>
+            <p>
+              Debugging is the process of finding and fixing errors (bugs) in
+              your program.
+            </p>
+            <p>
+              Bugs are mistakes that make your program crash, behave
+              incorrectly, or give the wrong output.
+            </p>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">🧹</div>
+            <div class="application-title">Before You Start Debugging</div>
+            <div class="application-desc">
+              <ul class="point-list">
+                <li>Use proper indentation to keep the structure clear</li>
+                <li>
+                  Give your variables clear, meaningful names that describe what
+                  they store
+                </li>
+                <li>Clean code is easier to read - and easier to debug!</li>
+              </ul>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Key Insight</div>
+              <p>
+                The time you spend writing clean, organized code will save you
+                hours of debugging later.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">2/12</div>
+      </div>
+
+      <!-- Slide 3: Print Debugging -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/print-debugging/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Print Debugging <span class="emoji">🖨️</span></h2>
+          <div class="debug-card">
+            <div class="debug-title">
+              <span class="debug-icon">1️⃣</span>
+              Use printf() to Trace Your Code
+            </div>
+            <p>
+              Use printf() to print values at different points in your code to
+              see what's going wrong:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> x = 10;<br />
+              <span class="code-keyword">int</span> y = 0;<br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Before division\n"</span
+              >); <span class="code-comment">// Debug output</span><br />
+              <span class="code-keyword">int</span> z = x / y;
+              <span class="code-comment">// Crashes (division by zero)</span
+              ><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"After division\n"</span
+              >); <span class="code-comment">// Never runs</span>
+            </div>
+            <p>
+              If you don't see "After division", the program crashed at x / y.
+            </p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>Print Before</p>
+              <p>"Before division"</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Execute Code</p>
+              <p>x / y (crashes)</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Print After</p>
+              <p>"After division"</p>
+              <p>(never reached)</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">3/12</div>
+      </div>
+
+      <!-- Slide 4: Check Variable Values -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/check-variables/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Check Variable Values <span class="emoji">🔍</span></h2>
+          <div class="debug-card">
+            <div class="debug-title">
+              <span class="debug-icon">2️⃣</span>
+              Print Variables to Verify Values
+            </div>
+            <p>Print variables to see if they are what you expect:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> x = 10;<br />
+              <span class="code-keyword">int</span> y = 5;<br />
+              <span class="code-keyword">int</span> result = x - y;<br /><br />
+
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Result: %d\n"</span
+              >, result); <span class="code-comment">// Result: 5</span>
+            </div>
+            <p>
+              Expected 15? That means the logic is wrong: try using x + y
+              instead.
+            </p>
+          </div>
+          <div class="pointer-visual">
+            <div class="pointer-block">
+              <p>Expected</p>
+              <p>15</p>
+            </div>
+            <div class="arrow">≠</div>
+            <div class="pointer-block">
+              <p>Actual</p>
+              <p>5</p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Debugging Tip</div>
+              <p>
+                Printing variables at key points helps you identify where your
+                program's behavior diverges from your expectations.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">4/12</div>
+      </div>
+
+      <!-- Slide 5: Use Debugger Tools -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/debugger-tools/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Use Debugger Tools <span class="emoji">🛠️</span></h2>
+          <div class="debug-card">
+            <div class="debug-title">
+              <span class="debug-icon">3️⃣</span>
+              IDE Debuggers
+            </div>
+            <p>
+              IDEs like Visual Studio, Code::Blocks, and VS Code have built-in
+              debuggers that work with C. These tools let you:
+            </p>
+            <ul class="point-list">
+              <li>Pause your program using breakpoints</li>
+              <li>Step through your code line by line</li>
+              <li>Watch variables and see unexpected values as they change</li>
+            </ul>
+          </div>
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">⏸️</div>
+              <h4>Breakpoints</h4>
+              <p>Pause execution at specific lines to examine program state</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">👣</div>
+              <h4>Step Through</h4>
+              <p>Execute code one line at a time to follow the flow</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">👀</div>
+              <h4>Watch Variables</h4>
+              <p>Monitor variable values as they change during execution</p>
+            </div>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">💡</div>
+            <div class="application-title">Tip</div>
+            <div class="application-desc">
+              Start with printf() debugging. Once you're comfortable, explore
+              your IDE's debugger to get even better insights into your code.
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">5/12</div>
+      </div>
+
+      <!-- Slide 6: Learn from Error Messages -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/error-messages/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Learn from Error Messages <span class="emoji">📖</span></h2>
+          <div class="debug-card">
+            <div class="debug-title">
+              <span class="debug-icon">4️⃣</span>
+              Read Error Messages Carefully
+            </div>
+            <p>
+              The C compiler and runtime errors often tell you what went wrong
+              and where. For example:
+            </p>
+            <div class="error-box">error: expected ';' before 'printf'</div>
+            <p>Easy solution: Fix the missing semicolon!</p>
+          </div>
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">📍</div>
+              <h4>Location</h4>
+              <p>
+                Error messages often include the file name and line number where
+                the error occurred
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h4>Description</h4>
+              <p>
+                The message describes what the compiler or runtime doesn't
+                understand
+              </p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Pro Tip</div>
+              <p>
+                Even if you don't understand the entire error message, focus on
+                the key parts like the line number and the specific error
+                mentioned.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">6/12</div>
+      </div>
+
+      <!-- Slide 7: Debugging with Safe Checks -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/safe-checks/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Debugging with Safe Checks <span class="emoji">🛡️</span></h2>
+          <div class="card">
+            <h3>Preventing Crashes Before They Happen</h3>
+            <p>
+              Some bugs, like dividing by zero, are known to cause crashes. If
+              you know an operation could fail, you can check for it in advance
+              and avoid the crash.
+            </p>
+          </div>
+          <div class="debug-card">
+            <div class="debug-title">Division by Zero Example</div>
+            <div class="code-block">
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> x = 10;<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> y = 0;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Before division\n"</span
+              >);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (y != 0) {
+              <span class="code-comment"
+                >// Check that y is not zero before dividing</span
+              ><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">int</span> z =
+              x / y;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Result: %d\n"</span>, z);<br />
+              &nbsp;&nbsp;} <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Error: Division by zero!\n"</span>);
+              <span class="code-comment"
+                >// Print error message instead of crashing</span
+              ><br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"After division\n"</span
+              >);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">💡</div>
+            <div class="application-title">Result</div>
+            <div class="application-desc">
+              Now, instead of crashing, the program prints an error message and
+              continues running. This is an important part of writing safe,
+              debuggable code.
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">7/12</div>
+      </div>
+
+      <!-- Slide 8: Out-of-Bounds Array Access -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/array-bounds/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Out-of-Bounds Array Access <span class="emoji">📊</span></h2>
+          <div class="card">
+            <h3>Another Common Mistake</h3>
+            <p>
+              Accessing elements outside the array is another common mistake. In
+              the example below, we use printf() to check the index value before
+              using it:
+            </p>
+          </div>
+          <div class="debug-card">
+            <div class="debug-title">Safe Array Access Example</div>
+            <div class="code-block">
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> numbers[3] =
+              {10, 20, 30};<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> index = 5;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Index = %d\n"</span
+              >, index);<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (index >= 0 &&
+              index < 3) {
+              <span class="code-comment"
+                >// Make sure the index is within the valid range (0 to 2)</span
+              ><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Value = %d\n"</span>,
+              numbers[index]);<br />
+              &nbsp;&nbsp;} <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Error: Index out of bounds!\n"</span
+              >);<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+          <div class="pointer-visual">
+            <div class="pointer-block">
+              <p>Array</p>
+              <p>[0] [1] [2]</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="pointer-block">
+              <p>Valid Range</p>
+              <p>0 to 2</p>
+            </div>
+            <div class="arrow">≠</div>
+            <div class="pointer-block">
+              <p>Attempted Access</p>
+              <p>5 (out of bounds)</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">8/12</div>
+      </div>
+
+      <!-- Slide 9: Debugging Summary -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/debugging-summary/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Debugging Summary <span class="emoji">📝</span></h2>
+          <div class="summary-box">
+            <h3>Key Takeaways</h3>
+            <ul class="point-list" style="color: white">
+              <li>Use printf() to print values and trace your code</li>
+              <li>
+                Read error messages carefully - they often tell you what went
+                wrong and where
+              </li>
+              <li>
+                Add checks (like if (y != 0)) to avoid crashes before they
+                happen
+              </li>
+              <li>
+                Use an IDE's debugger when you're ready for deeper debugging
+              </li>
+              <li>
+                Debugging helps you understand your program better and fix
+                problems faster
+              </li>
+            </ul>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">🔄</div>
+            <div class="application-title">Error Handling</div>
+            <div class="application-desc">
+              While debugging is about finding and fixing mistakes in your code
+              during development, error handling is a way to deal with problems
+              while the program is running, and run specific code when something
+              goes wrong.
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">📚</div>
+            <div class="component-details">
+              <div class="component-name">Next Up</div>
+              <p>
+                You will learn about NULL Pointers and Error Handling in the
+                next chapters.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">9/12</div>
+      </div>
+
+      <!-- Slide 10: C NULL Introduction -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/c-null-intro/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>C NULL <span class="emoji">🚫</span></h2>
+          <div class="null-card">
+            <div class="null-title">What is NULL?</div>
+            <p>
+              NULL is a special value that represents a "null pointer" - a
+              pointer that does not point to anything.
+            </p>
+            <p>
+              It helps you avoid using pointers that are empty or invalid. You
+              can compare a pointer to NULL to check if it is safe to use.
+            </p>
+          </div>
+          <div class="pointer-visual">
+            <div class="pointer-block">
+              <p>Valid Pointer</p>
+              <p>Points to memory</p>
+            </div>
+            <div class="arrow">≠</div>
+            <div class="pointer-block">
+              <p>NULL Pointer</p>
+              <p>Points to nothing</p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Common Usage</div>
+              <p>
+                Many C functions return NULL when something goes wrong. For
+                example, fopen() returns NULL if a file cannot be opened, and
+                malloc() returns NULL if memory allocation fails.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">10/12</div>
+      </div>
+
+      <!-- Slide 11: NULL Examples -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/null-examples/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>NULL Examples <span class="emoji">💻</span></h2>
+          <div class="null-card">
+            <div class="null-title">File Opening Example</div>
+            <p>
+              In this example, we try to open a file that does not exist. Since
+              fopen() fails, it returns NULL and we print an error message:
+            </p>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;FILE *fptr =
+              <span class="code-function">fopen</span>(<span class="code-string"
+                >"nothing.txt"</span
+              >, <span class="code-string">"r"</span>);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (fptr == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Could not open file.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">fclose</span>(fptr);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+          <div class="null-card">
+            <div class="null-title">Memory Allocation Example</div>
+            <p>
+              If you try to allocate too much memory, malloc() may fail and
+              return NULL:
+            </p>
+            <div class="code-block">
+              <span class="code-comment">#include &lt;stdio.h&gt;</span><br />
+              <span class="code-comment">#include &lt;stdlib.h&gt;</span
+              ><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-keyword">int</span> *numbers =
+              (<span class="code-keyword">int</span>*)
+              <span class="code-function">malloc</span>(100000000000000 *
+              <span class="code-function">sizeof</span>(<span
+                class="code-keyword"
+                >int</span
+              >));<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (numbers == NULL)
+              {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Memory allocation failed.\n"</span
+              >);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+              1;<br />
+              &nbsp;&nbsp;}<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Memory allocation successful!\n"</span
+              >);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-function">free</span
+              >(numbers);<br />
+              &nbsp;&nbsp;numbers = NULL;<br /><br />
+
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">11/12</div>
+      </div>
+
+      <!-- Slide 12: NULL Summary -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/null-summary/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>NULL Summary <span class="emoji">📝</span></h2>
+          <div class="summary-box">
+            <h3>Key Takeaways</h3>
+            <ul class="point-list" style="color: white">
+              <li>NULL represents a null (empty) pointer</li>
+              <li>It signals that a pointer is not pointing anywhere</li>
+              <li>
+                You can compare a pointer to NULL to check if it's safe to use
+              </li>
+              <li>
+                Functions like malloc() and fopen() return NULL if they fail
+              </li>
+            </ul>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">💡</div>
+            <div class="application-title">Important Tip</div>
+            <div class="application-desc">
+              Always check if a pointer is NULL before using it. This helps
+              avoid crashes caused by accessing invalid memory.
+            </div>
+          </div>
+          <div class="grid-container" style="margin-top: 30px">
+            <div class="feature-card">
+              <div class="feature-icon">✅</div>
+              <h4>Do</h4>
+              <p>Check for NULL after allocation</p>
+              <p>Set pointers to NULL after freeing</p>
+              <p>Compare pointers to NULL before use</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">❌</div>
+              <h4>Don't</h4>
+              <p>Dereference NULL pointers</p>
+              <p>Assume allocation always succeeds</p>
+              <p>Forget to check for NULL</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">12/12</div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(8)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(9)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(10)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(11)"></div>
+    </div>
+
+    <script>
+      function scrollToSlide(index) {
+        const slides = document.querySelectorAll(".slide");
+        slides[index].scrollIntoView({ behavior: "smooth" });
+
+        // Update active navigation dot
+        const navDots = document.querySelectorAll(".nav-dot");
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[index].classList.add("active");
+      }
+
+      // Update active navigation dot based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[currentSlide].classList.add("active");
+      });
+    </script>
+  </body>
+</html>

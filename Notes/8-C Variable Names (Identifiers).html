@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Variable Names (Identifiers)</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://picsum.photos/seed/cvariablenames/1920/1080.jpg");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .name-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .name-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .name-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .name-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .name-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .name-desc {
+        margin-bottom: 15px;
+      }
+
+      .name-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .name-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .feature-icon-small {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .feature-details {
+        flex: 1;
+      }
+
+      .feature-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .line-number {
+        display: inline-block;
+        width: 30px;
+        color: #888;
+        text-align: right;
+        margin-right: 10px;
+      }
+
+      .note-box {
+        background-color: #e3f2fd;
+        border-left: 4px solid var(--secondary-color);
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .note-title {
+        color: var(--secondary-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .note-icon {
+        margin-right: 10px;
+      }
+
+      .tip-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .tip-title {
+        color: var(--success-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .tip-icon {
+        margin-right: 10px;
+      }
+
+      .warning-box {
+        background-color: #fff8e1;
+        border-left: 4px solid var(--warning-color);
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .warning-title {
+        color: var(--warning-color);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .warning-icon {
+        margin-right: 10px;
+      }
+
+      .rule-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      .rule-table th {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 15px;
+        text-align: left;
+      }
+
+      .rule-table td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .rule-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .rule-table tr:hover {
+        background-color: var(--light-bg);
+      }
+
+      .example-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .example-box {
+        width: 100%;
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px 0;
+        box-shadow: var(--card-shadow);
+        text-align: left;
+      }
+
+      .example-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .example-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .output-preview {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 15px 0;
+        font-family: monospace;
+        text-align: left;
+        color: var(--text-color);
+      }
+
+      .vs-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 30px 0;
+      }
+
+      .vs-box {
+        flex: 1;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        margin: 0 10px;
+        text-align: center;
+      }
+
+      .vs-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+      }
+
+      .vs-divider {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-color);
+      }
+
+      .vs-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px 0;
+      }
+
+      .variable-box {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 10px;
+        min-width: 120px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+      }
+
+      .variable-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .variable-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 5px;
+      }
+
+      .variable-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .rectangle-visual {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .rectangle-shape {
+        width: 200px;
+        height: 120px;
+        background-color: var(--secondary-color);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin: 10px 0;
+        box-shadow: var(--card-shadow);
+        position: relative;
+      }
+
+      .dimension-label {
+        position: absolute;
+        color: var(--primary-color);
+        font-weight: 600;
+        background-color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .width-label {
+        bottom: -30px;
+      }
+
+      .height-label {
+        right: -60px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .area-label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .vs-container {
+          flex-direction: column;
+        }
+        .vs-box {
+          width: 100%;
+          margin: 10px 0;
+        }
+        .vs-divider {
+          flex-direction: row;
+        }
+        .rectangle-shape {
+          width: 150px;
+          height: 90px;
+        }
+        .height-label {
+          right: -50px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide" id="slide1">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h1 class="floating">C Variable Names (Identifiers)</h1>
+          <div class="emoji" style="font-size: 4rem">🏷️📝🔤</div>
+          <p style="font-size: 1.3rem; margin-top: 30px">
+            Understanding how to name variables properly in C programming
+          </p>
+        </div>
+        <div class="slide-number">1/7</div>
+      </div>
+
+      <!-- Slide 2: Introduction to Variable Names -->
+      <div class="slide" id="slide2">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>C Variable Names</h2>
+          <p>All C variables must be identified with unique names.</p>
+          <p>These unique names are called identifiers.</p>
+
+          <div class="name-card">
+            <div class="name-icon">🏷️</div>
+            <div class="name-title">Identifier Types</div>
+            <div class="name-desc">
+              <p>
+                Identifiers can be short names (like x and y) or more
+                descriptive names (age, sum, totalVolume).
+              </p>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">
+              <span class="note-icon">💡</span>
+              Note
+            </div>
+            <p>
+              It is recommended to use descriptive names in order to create
+              understandable and maintainable code:
+            </p>
+          </div>
+
+          <div class="vs-container">
+            <div class="vs-box">
+              <div class="vs-title">Good Variable Name</div>
+              <div class="code-block" style="margin: 15px 0">
+                <span class="code-keyword">int</span> minutesPerHour =
+                <span class="code-number">60</span>;
+              </div>
+              <div
+                class="feature-icon-small"
+                style="color: var(--success-color)"
+              >
+                ✅
+              </div>
+              <p>Clear and descriptive</p>
+            </div>
+
+            <div class="vs-divider">
+              <div>VS</div>
+              <div class="vs-circle">VS</div>
+            </div>
+
+            <div class="vs-box">
+              <div class="vs-title">Not So Good</div>
+              <div class="code-block" style="margin: 15px 0">
+                <span class="code-keyword">int</span> m =
+                <span class="code-number">60</span>;
+              </div>
+              <div
+                class="feature-icon-small"
+                style="color: var(--warning-color)"
+              >
+                ⚠️
+              </div>
+              <p>OK, but not so easy to understand what m actually is</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">2/7</div>
+      </div>
+
+      <!-- Slide 3: Naming Rules -->
+      <div class="slide" id="slide3">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Rules for Naming Variables</h2>
+          <p>The general rules for naming variables are:</p>
+
+          <div class="rule-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rule</th>
+                  <th>Valid Examples</th>
+                  <th>Invalid Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Names can contain letters, digits and underscores</td>
+                  <td>myVar, var1, _temp</td>
+                  <td>my-var, var#1</td>
+                </tr>
+                <tr>
+                  <td>Names must begin with a letter or an underscore (_)</td>
+                  <td>name, _name, _123</td>
+                  <td>1name, 123</td>
+                </tr>
+                <tr>
+                  <td>Names are case-sensitive</td>
+                  <td>myVar and myvar are different variables</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td>
+                    Names cannot contain whitespaces or special characters
+                  </td>
+                  <td>myVar, my_var</td>
+                  <td>my var, my@var</td>
+                </tr>
+                <tr>
+                  <td>Reserved words cannot be used as names</td>
+                  <td>myInt, myNumber</td>
+                  <td>int, float, char</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="warning-box">
+            <div class="warning-title">
+              <span class="warning-icon">⚠️</span>
+              Important
+            </div>
+            <p>
+              Reserved words (such as int) cannot be used as names. These words
+              have special meaning in C and are part of the language syntax.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">3/7</div>
+      </div>
+
+      <!-- Slide 4: Naming Conventions -->
+      <div class="slide" id="slide4">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Naming Conventions</h2>
+          <p>
+            While C doesn't enforce specific naming conventions, following
+            common practices makes your code more readable:
+          </p>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🐪</div>
+              <h3>camelCase</h3>
+              <p>firstName, lastName, studentAge</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🐍</div>
+              <h3>snake_case</h3>
+              <p>first_name, last_name, student_age</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔤</div>
+              <h3>PascalCase</h3>
+              <p>FirstName, LastName, StudentAge</p>
+            </div>
+          </div>
+
+          <div class="name-card">
+            <div class="name-icon">💡</div>
+            <div class="name-title">Best Practices</div>
+            <div class="name-feature">
+              <div class="feature-icon-small">📝</div>
+              <div class="feature-details">
+                <div class="feature-title">Be Descriptive</div>
+                <p>Choose names that describe the purpose of the variable</p>
+              </div>
+            </div>
+            <div class="name-feature">
+              <div class="feature-icon-small">📏</div>
+              <div class="feature-details">
+                <div class="feature-title">Keep it Reasonable</div>
+                <p>Avoid extremely long names that make code hard to read</p>
+              </div>
+            </div>
+            <div class="name-feature">
+              <div class="feature-icon-small">🔄</div>
+              <div class="feature-details">
+                <div class="feature-title">Be Consistent</div>
+                <p>Stick to one naming convention throughout your program</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">4/7</div>
+      </div>
+
+      <!-- Slide 5: Student Data Example -->
+      <div class="slide" id="slide5">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Real-Life Example: Student Data</h2>
+          <p>
+            Often in our examples, we simplify variable names to match their
+            data type (myInt or myNum for int types, myChar for char types, and
+            so on). This is done to avoid confusion.
+          </p>
+
+          <p>
+            However, for a practical example of using variables, we have created
+            a program that stores different data about a college student:
+          </p>
+
+          <div class="example-container">
+            <div class="example-box">
+              <div class="example-title">
+                <span class="example-icon">🎓</span>
+                Student Data Example
+              </div>
+              <div class="code-block">
+                <span class="line-number">1</span
+                ><span class="code-comment">// Student data</span><br />
+                <span class="line-number">2</span
+                ><span class="code-keyword">int</span> studentID =
+                <span class="code-number">15</span>;<br />
+                <span class="line-number">3</span
+                ><span class="code-keyword">int</span> studentAge =
+                <span class="code-number">23</span>;<br />
+                <span class="line-number">4</span
+                ><span class="code-keyword">float</span> studentFee =
+                <span class="code-number">75.25</span>;<br />
+                <span class="line-number">5</span
+                ><span class="code-keyword">char</span> studentGrade =
+                <span class="code-string">'B'</span>;<br />
+                <span class="line-number">6</span><br />
+                <span class="line-number">7</span
+                ><span class="code-comment">// Print variables</span><br />
+                <span class="line-number">8</span
+                ><span class="code-function">printf</span>(<span
+                  class="code-string"
+                  >"Student id: %d\n"</span
+                >, studentID);<br />
+                <span class="line-number">9</span
+                ><span class="code-function">printf</span>(<span
+                  class="code-string"
+                  >"Student age: %d\n"</span
+                >, studentAge);<br />
+                <span class="line-number">10</span
+                ><span class="code-function">printf</span>(<span
+                  class="code-string"
+                  >"Student fee: %f\n"</span
+                >, studentFee);<br />
+                <span class="line-number">11</span
+                ><span class="code-function">printf</span>(<span
+                  class="code-string"
+                  >"Student grade: %c"</span
+                >, studentGrade);
+              </div>
+              <div class="output-preview">
+                Student id: 15<br />
+                Student age: 23<br />
+                Student fee: 75.250000<br />
+                Student grade: B
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            <div class="tip-title">
+              <span class="tip-icon">💡</span>
+              Tip
+            </div>
+            <p>
+              Notice how the variable names (studentID, studentAge, etc.)
+              clearly describe what data they store. This makes the code much
+              easier to understand and maintain.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">5/7</div>
+      </div>
+
+      <!-- Slide 6: Rectangle Area Example -->
+      <div class="slide" id="slide6">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Calculate the Area of a Rectangle</h2>
+          <p>
+            In this real-life example, we create a program to calculate the area
+            of a rectangle (by multiplying the length and width):
+          </p>
+
+          <div class="example-container">
+            <div class="example-box">
+              <div class="example-title">
+                <span class="example-icon">📐</span>
+                Rectangle Area Calculation
+              </div>
+              <div class="code-block">
+                <span class="line-number">1</span
+                ><span class="code-comment">// Create integer variables</span
+                ><br />
+                <span class="line-number">2</span
+                ><span class="code-keyword">int</span> length =
+                <span class="code-number">4</span>;<br />
+                <span class="line-number">3</span
+                ><span class="code-keyword">int</span> width =
+                <span class="code-number">6</span>;<br />
+                <span class="line-number">4</span
+                ><span class="code-keyword">int</span> area;<br />
+                <span class="line-number">5</span><br />
+                <span class="line-number">6</span
+                ><span class="code-comment"
+                  >// Calculate the area of a rectangle</span
+                ><br />
+                <span class="line-number">7</span>area = length * width;<br />
+                <span class="line-number">8</span><br />
+                <span class="line-number">9</span
+                ><span class="code-comment">// Print the variables</span><br />
+                <span class="line-number">10</span
+                ><span class="code-function">printf</span>(<span
+                  class="code-string"
+                  >"Length is: %d\n"</span
+                >, length);<br />
+                <span class="line-number">11</span
+                ><span class="code-function">printf</span>(<span
+                  class="code-string"
+                  >"Width is: %d\n"</span
+                >, width);<br />
+                <span class="line-number">12</span
+                ><span class="code-function">printf</span>(<span
+                  class="code-string"
+                  >"Area of the rectangle is: %d"</span
+                >, area);
+              </div>
+              <div class="output-preview">
+                Length is: 4<br />
+                Width is: 6<br />
+                Area of the rectangle is: 24
+              </div>
+            </div>
+          </div>
+
+          <div class="rectangle-visual">
+            <div class="rectangle-shape">
+              <div class="dimension-label width-label">width = 6</div>
+              <div class="dimension-label height-label">length = 4</div>
+              <div>Rectangle</div>
+              <div class="area-label">Area = 24</div>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <div class="note-title">
+              <span class="note-icon">💡</span>
+              Note
+            </div>
+            <p>
+              The variable names (length, width, area) are simple but
+              descriptive, making it clear what each variable represents in the
+              calculation.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">6/7</div>
+      </div>
+
+      <!-- Slide 7: Summary -->
+      <div class="slide" id="slide7">
+        <div class="cartoon-bg"></div>
+        <div class="slide-content">
+          <h2>Summary</h2>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🏷️</div>
+              <h3>Identifiers</h3>
+              <p>Unique names for variables</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📝</div>
+              <h3>Descriptive Names</h3>
+              <p>Make code understandable</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📋</div>
+              <h3>Naming Rules</h3>
+              <p>Letters, digits, underscores</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔄</div>
+              <h3>Case-Sensitive</h3>
+              <p>myVar and myvar are different</p>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <h3 style="color: white; margin-bottom: 20px">
+              Key Points to Remember
+            </h3>
+            <div
+              class="component-card"
+              style="
+                background-color: rgba(255, 255, 255, 0.1);
+                margin-bottom: 15px;
+              "
+            >
+              <div class="component-icon" style="color: white">📝</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Be Descriptive
+                </div>
+                <p style="color: white">
+                  Use names that clearly describe what the variable represents
+                </p>
+              </div>
+            </div>
+            <div
+              class="component-card"
+              style="
+                background-color: rgba(255, 255, 255, 0.1);
+                margin-bottom: 15px;
+              "
+            >
+              <div class="component-icon" style="color: white">📋</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Follow Rules
+                </div>
+                <p style="color: white">
+                  Start with letter or underscore, use only letters, digits, and
+                  underscores
+                </p>
+              </div>
+            </div>
+            <div
+              class="component-card"
+              style="
+                background-color: rgba(255, 255, 255, 0.1);
+                margin-bottom: 15px;
+              "
+            >
+              <div class="component-icon" style="color: white">🔄</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Case Sensitivity
+                </div>
+                <p style="color: white">
+                  Remember that C is case-sensitive when naming variables
+                </p>
+              </div>
+            </div>
+            <div
+              class="component-card"
+              style="background-color: rgba(255, 255, 255, 0.1)"
+            >
+              <div class="component-icon" style="color: white">🚫</div>
+              <div class="component-details">
+                <div class="component-name" style="color: white">
+                  Avoid Reserved Words
+                </div>
+                <p style="color: white">
+                  Don't use C keywords like int, float, char as variable names
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; font-size: 1.3rem">
+            <span class="emoji">🙏</span> Thank you for your attention!
+            <span class="emoji">👋</span>
+          </div>
+        </div>
+        <div class="slide-number">7/7</div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide('slide1')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide2')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide3')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide4')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide5')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide6')"></div>
+      <div class="nav-dot" onclick="scrollToSlide('slide7')"></div>
+    </div>
+
+    <script>
+      // Function to scroll to a specific slide
+      function scrollToSlide(slideId) {
+        document.getElementById(slideId).scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update active navigation dot based on scroll position
+      window.addEventListener("scroll", function () {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      });
+
+      // Add keyboard navigation
+      document.addEventListener("keydown", function (e) {
+        const slides = document.querySelectorAll(".slide");
+        const currentSlide = Array.from(slides).findIndex((slide) => {
+          const rect = slide.getBoundingClientRect();
+          return (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          );
+        });
+
+        if (e.key === "ArrowDown" && currentSlide < slides.length - 1) {
+          scrollToSlide(`slide${currentSlide + 2}`);
+        } else if (e.key === "ArrowUp" && currentSlide > 0) {
+          scrollToSlide(`slide${currentSlide}`);
+        }
+      });
+    </script>
+  </body>
+</html>

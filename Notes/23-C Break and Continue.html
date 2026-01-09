@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Break and Continue - Interactive Presentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .gui-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .gui-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .gui-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .gui-details {
+        flex: 1;
+      }
+
+      .gui-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .embedded-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .embedded-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .embedded-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--success-color);
+        flex-shrink: 0;
+      }
+
+      .embedded-details {
+        flex: 1;
+      }
+
+      .embedded-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .adobe-products {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+      }
+
+      .adobe-product {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+        width: 30%;
+      }
+
+      .adobe-product:hover {
+        transform: translateY(-10px);
+        background-color: #e9ecef;
+      }
+
+      .adobe-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+      }
+
+      .adobe-name {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .output-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .type-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .pointer-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .memory-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 10px;
+      }
+
+      .memory-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .memory-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      .memory-label {
+        min-width: 150px;
+        text-align: right;
+        padding-right: 15px;
+        font-weight: 600;
+      }
+
+      .memory-value {
+        background-color: var(--light-bg);
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        padding: 8px 15px;
+        min-width: 120px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .adobe-products {
+          flex-direction: column;
+          align-items: center;
+        }
+        .adobe-product {
+          width: 80%;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+    </div>
+
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide" id="slide-0">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/c-break-continue/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">
+            C Break and Continue <span class="emoji">⏹️</span>
+          </h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Controlling loop flow with break and continue statements
+            <span class="emoji">🔄</span>
+          </p>
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              Learn how to control loop execution with break and continue
+              <span class="emoji">🎮</span>
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">1/8</div>
+      </div>
+
+      <!-- Slide 2: Break Statement -->
+      <div class="slide" id="slide-1">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/break-statement/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Break <span class="emoji">🛑</span></h2>
+          <p>
+            You have already seen the break statement used in an earlier chapter
+            of this tutorial. It was used to "jump out" of a switch statement.
+          </p>
+
+          <div class="card">
+            <h3>Break in Loops <span class="emoji">⏹️</span></h3>
+            <p>The break statement can also be used to jump out of a loop.</p>
+          </div>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>This example stops the loop when i is equal to 4:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> i;<br /><br />
+
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i <
+              <span class="code-number">10</span>; i++) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (i ==
+              <span class="code-number">4</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span
+              >;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, i);<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              0<br />
+              1<br />
+              2<br />
+              3
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Explanation <span class="emoji">📖</span></h3>
+            <p>
+              In this example, the loop iterates from 0 to 9, but when i reaches
+              4, the break statement is executed, causing the loop to exit
+              immediately. This is why only numbers 0, 1, 2, and 3 are printed.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">2/8</div>
+      </div>
+
+      <!-- Slide 3: Continue Statement -->
+      <div class="slide" id="slide-2">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/continue-statement/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Continue <span class="emoji">⏭️</span></h2>
+          <p>
+            The continue statement breaks one iteration (in the loop), if a
+            specified condition occurs, and continues with the next iteration in
+            the loop.
+          </p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>This example skips the value of 4:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> i;<br /><br />
+
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i <
+              <span class="code-number">10</span>; i++) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (i ==
+              <span class="code-number">4</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">continue</span
+              >;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, i);<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              0<br />
+              1<br />
+              2<br />
+              3<br />
+              5<br />
+              6<br />
+              7<br />
+              8<br />
+              9
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Explanation <span class="emoji">📖</span></h3>
+            <p>
+              In this example, the loop iterates from 0 to 9, but when i reaches
+              4, the continue statement is executed. This causes the current
+              iteration to end immediately and the loop to proceed to the next
+              iteration. This is why the number 4 is not printed, but all other
+              numbers from 0 to 9 are printed.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">3/8</div>
+      </div>
+
+      <!-- Slide 4: Combining Break and Continue -->
+      <div class="slide" id="slide-3">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/break-continue-combine/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Combining Break and Continue <span class="emoji">🔀</span></h2>
+          <p>You can also combine break and continue.</p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>This example skips printing 2 and stops the loop at 4:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> i;<br /><br />
+
+              <span class="code-keyword">for</span> (i =
+              <span class="code-number">0</span>; i <
+              <span class="code-number">6</span>; i++) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (i ==
+              <span class="code-number">2</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">continue</span
+              >;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (i ==
+              <span class="code-number">4</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span
+              >;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, i);<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              0<br />
+              1<br />
+              3
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Explanation <span class="emoji">📖</span></h3>
+            <ul class="point-list">
+              <li>When i is 0, it's printed normally</li>
+              <li>When i is 1, it's printed normally</li>
+              <li>
+                When i is 2, the continue statement is executed, skipping the
+                printf and moving to the next iteration
+              </li>
+              <li>When i is 3, it's printed normally</li>
+              <li>
+                When i is 4, the break statement is executed, causing the loop
+                to exit completely
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">4/8</div>
+      </div>
+
+      <!-- Slide 5: Break and Continue in While Loops -->
+      <div class="slide" id="slide-4">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/while-break-continue/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            Break and Continue in While Loops <span class="emoji">🔄</span>
+          </h2>
+          <p>You can also use break and continue in while loops:</p>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🛑</div>
+              <h3>Break Example</h3>
+              <p>Exits the loop when a condition is met</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⏭️</div>
+              <h3>Continue Example</h3>
+              <p>Skips the current iteration and continues with the next</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Break in While Loop <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-keyword">int</span> i =
+              <span class="code-number">0</span>;<br /><br />
+
+              <span class="code-keyword">while</span> (i <
+              <span class="code-number">10</span>) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (i ==
+              <span class="code-number">4</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span
+              >;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, i);<br />
+              &nbsp;&nbsp;i++;<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              0<br />
+              1<br />
+              2<br />
+              3
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Continue in While Loop <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-keyword">int</span> i =
+              <span class="code-number">0</span>;<br /><br />
+
+              <span class="code-keyword">while</span> (i <
+              <span class="code-number">10</span>) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (i ==
+              <span class="code-number">4</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;i++;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">continue</span
+              >;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d\n"</span
+              >, i);<br />
+              &nbsp;&nbsp;i++;<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Output:</strong><br />
+              0<br />
+              1<br />
+              2<br />
+              3<br />
+              5<br />
+              6<br />
+              7<br />
+              8<br />
+              9
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Key Difference <span class="emoji">🔍</span></h3>
+            <p>
+              Notice that in the continue example, we increment i before the
+              continue statement to avoid an infinite loop. This is important
+              because if we didn't increment i when i equals 4, the loop would
+              continue checking if i equals 4 forever.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">5/8</div>
+      </div>
+
+      <!-- Slide 6: Good to Remember -->
+      <div class="slide" id="slide-5">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/break-continue-remember/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Good to Remember <span class="emoji">💡</span></h2>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🛑</div>
+              <h3>Break</h3>
+              <p>Stops the loop completely</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⏭️</div>
+              <h3>Continue</h3>
+              <p>Skips this round, but keeps looping</p>
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Important Note</span>
+            </div>
+            <p>
+              Both break and continue are powerful tools for controlling loop
+              flow, but they should be used carefully to avoid confusion and
+              unintended behavior in your programs.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">6/8</div>
+      </div>
+
+      <!-- Slide 7: Real-Life Example -->
+      <div class="slide" id="slide-6">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/real-life-example/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Real-Life Example <span class="emoji">🌍</span></h2>
+          <p>
+            Imagine processing a list of numbers where you want to skip negative
+            values, but stop completely if you find a zero:
+          </p>
+
+          <div class="code-block">
+            <span class="code-keyword">int</span> myNumbers[] = {<span
+              class="code-number"
+              >3</span
+            >, <span class="code-number">-1</span>,
+            <span class="code-number">7</span>,
+            <span class="code-number">0</span>,
+            <span class="code-number">9</span>};<br />
+            <span class="code-keyword">int</span> length =
+            <span class="code-keyword">sizeof</span>(myNumbers) /
+            <span class="code-keyword">sizeof</span>(myNumbers[<span
+              class="code-number"
+              >0</span
+            >]);<br />
+            <span class="code-keyword">int</span> i;<br /><br />
+
+            <span class="code-keyword">for</span> (i =
+            <span class="code-number">0</span>; i < length; i++) {<br />
+            &nbsp;&nbsp;<span class="code-keyword">if</span> (myNumbers[i] <
+            <span class="code-number">0</span>) {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">continue</span>;
+            <span class="code-comment">// skip negative numbers</span><br />
+            &nbsp;&nbsp;}<br />
+            &nbsp;&nbsp;<span class="code-keyword">if</span> (myNumbers[i] ==
+            <span class="code-number">0</span>) {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>;
+            <span class="code-comment">// stop loop when zero is found</span
+            ><br />
+            &nbsp;&nbsp;}<br />
+            &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+              class="code-string"
+              >"%d\n"</span
+            >, myNumbers[i]);<br />
+            }
+          </div>
+
+          <div class="output-box">
+            <strong>Output:</strong><br />
+            3<br />
+            7
+          </div>
+
+          <div class="card">
+            <h3>Explanation <span class="emoji">📖</span></h3>
+            <ul class="point-list">
+              <li>The array contains the numbers 3, -1, 7, 0, and 9</li>
+              <li>The loop processes each element in the array</li>
+              <li>When it encounters -1, the continue statement skips it</li>
+              <li>
+                When it encounters 0, the break statement stops the loop
+                completely
+              </li>
+              <li>Only 3 and 7 are printed before the loop stops</li>
+            </ul>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Note</span>
+            </div>
+            <p>
+              Don't worry if you don't fully understand the example above. It
+              uses an array (int numbers[] = {3, -1, 7, 0, 9};) to store the
+              numbers, and you will learn more about arrays in the next chapter.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">7/8</div>
+      </div>
+
+      <!-- Slide 8: Summary -->
+      <div class="slide" id="slide-7">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/break-continue-summary/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Summary <span class="emoji">📚</span></h2>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">🛑</div>
+              <h3>Break</h3>
+              <p>Exits a loop completely</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⏭️</div>
+              <h3>Continue</h3>
+              <p>Skips current iteration, continues with next</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🔄</div>
+              <h3>Loop Control</h3>
+              <p>Both statements provide precise control over loop flow</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Key Points <span class="emoji">🔑</span></h3>
+            <ul class="point-list">
+              <li>Break immediately exits the loop when encountered</li>
+              <li>
+                Continue skips the current iteration and moves to the next one
+              </li>
+              <li>Both can be used in for and while loops</li>
+              <li>
+                When using continue in while loops, be careful to modify the
+                loop variable before continue to avoid infinite loops
+              </li>
+              <li>
+                These statements are useful for filtering data or handling
+                special cases in loops
+              </li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              Break and continue statements give you precise control over loop
+              execution! <span class="emoji">🎮</span><br />
+              Use them wisely to make your code more efficient and readable.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">8/8</div>
+      </div>
+    </div>
+
+    <script>
+      // Function to scroll to a specific slide
+      function scrollToSlide(slideIndex) {
+        const slide = document.getElementById(`slide-${slideIndex}`);
+        slide.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update navigation dots based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

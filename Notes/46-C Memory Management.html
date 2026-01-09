@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Memory Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --info-color: #9b59b6;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .slide-container {
+            width: 100%;
+            scroll-snap-type: y mandatory;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: start;
+            position: relative;
+            background-color: white;
+        }
+
+        .slide:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+
+        .slide-content {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(
+                90deg,
+                var(--primary-color),
+                var(--secondary-color)
+            );
+            border-radius: 2px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            margin: 25px 0 15px;
+            color: var(--secondary-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: left;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .component-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            background-color: var(--light-bg);
+            transition: all 0.3s ease;
+        }
+
+        .component-card:hover {
+            background-color: #e9ecef;
+            transform: translateX(10px);
+        }
+
+        .component-icon {
+            font-size: 2rem;
+            margin-right: 20px;
+            color: var(--secondary-color);
+        }
+
+        .component-details {
+            flex: 1;
+        }
+
+        .component-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .navigation {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.3);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: scale(1.05);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .principle-box {
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+            position: relative;
+        }
+
+        .principle-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .principle-icon {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .summary-box {
+            background: linear-gradient(
+                135deg,
+                var(--primary-color),
+                var(--secondary-color)
+            );
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .highlight {
+            background-color: rgba(52, 152, 219, 0.2);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .code-comment {
+            color: #6a9955;
+        }
+
+        .code-keyword {
+            color: #569cd6;
+        }
+
+        .code-string {
+            color: #ce9178;
+        }
+
+        .code-function {
+            color: #dcdcaa;
+        }
+
+        .code-number {
+            color: #b5cea8;
+        }
+
+        .cartoon-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .point-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .point-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .point-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .output-box {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .pointer-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .memory-block {
+            background-color: var(--light-bg);
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 0 15px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin: 0 10px;
+        }
+
+        .memory-map {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .memory-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .memory-label {
+            min-width: 150px;
+            text-align: right;
+            padding-right: 15px;
+            font-weight: 600;
+        }
+
+        .memory-value {
+            background-color: var(--light-bg);
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            padding: 8px 15px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .equation-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .equation-part {
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 10px 15px;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            margin: 0 5px;
+        }
+
+        .equation-operator {
+            font-size: 2rem;
+            margin: 0 10px;
+            color: var(--accent-color);
+        }
+
+        .equation-result {
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 10px 15px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 8px;
+            margin: 0 5px;
+        }
+
+        .example-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: left;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .example-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .example-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .example-icon {
+            margin-right: 10px;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        .step-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .step {
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .step-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .step-text {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .step-arrow {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin: 0 10px;
+        }
+
+        .method-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .method-card {
+            width: 200px;
+            padding: 20px;
+            margin: 10px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .method-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .method-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .method-desc {
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            h2 {
+                font-size: 2rem;
+            }
+            h3 {
+                font-size: 1.5rem;
+            }
+            .slide {
+                padding: 40px 20px;
+            }
+            .navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide" id="slide1">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/c-memory-management/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h1 class="floating">C Memory Management <span class="emoji">💾</span></h1>
+                <h2>Understanding Memory Allocation in C</h2>
+                <div class="card">
+                    <p style="text-align: center; font-size: 1.3rem;">
+                        <span class="emoji">🔧</span> Managing how memory is used in C programs <span class="emoji">💡</span>
+                    </p>
+                </div>
+                <div class="summary-box">
+                    <h3 style="color: white; margin-bottom: 15px;">What We'll Cover</h3>
+                    <ul class="point-list" style="color: white;">
+                        <li>Memory in C and sizeof operator</li>
+                        <li>Why memory management is important</li>
+                        <li>Static vs Dynamic Memory</li>
+                        <li>Stack Memory</li>
+                        <li>Memory Allocation Functions (malloc, calloc)</li>
+                        <li>Proper use of sizeof with pointers</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">1/10</div>
+        </div>
+
+        <!-- Slide 2: Memory in C -->
+        <div class="slide" id="slide2">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/c-memory-basics/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Memory in C <span class="emoji">💾</span></h2>
+                <div class="card">
+                    <p>Understanding how memory works in C is important for efficient programming. When you create a basic variable, C automatically reserves space for that variable.</p>
+                </div>
+                <div class="example-box">
+                    <div class="example-title">
+                        <span class="example-icon">📏�</span>
+                        sizeof Operator Example
+                    </div>
+                    <div class="code-block">
+                        <pre><span class="code-comment">// Different data types use different amounts of memory</span>
+<span class="code-keyword">int</span> myInt;
+<span class="code-keyword">float</span> myFloat;
+<span class="code-keyword">double</span> myDouble;
+<span class="code-keyword">char</span> myChar;
+
+<span class="code-function">printf</span>(<span class="code-string">"%zu\n"</span>, <span class="code-function">sizeof</span>(myInt));      <span class="code-comment">// 4 bytes</span>
+<span class="code-function">printf</span>(<span class="code-string">"%zu\n"</span>, <span class="code-function">sizeof</span>(myFloat));    <span class="code-comment">// 4 bytes</span>
+<span class="code-function">printf</span>(<span class="code-string">"%zu\n"</span>, <span class="code-function">sizeof</span>(myDouble));   <span class="code-comment">// 8 bytes</span>
+<span class="code-function">printf</span>(<span class="code-string">"%zu\n"</span>, <span class="code-function">sizeof</span>(myChar));     <span class="code-comment">// 1 byte</span></pre>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Why It's Important to Know</h3>
+                    <p>If you create a program that occupies too much, or unnecessary memory, it can result in slow and poor performance.</p>
+                </div>
+            </div>
+            <div class="slide-number">2/10</div>
+        </div>
+
+        <!-- Slide 3: Why Memory Management is Important -->
+        <div class="slide" id="slide3">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/memory-importance/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Why Memory Management is Important <span class="emoji">🎯</span></h2>
+                <div class="card">
+                    <p>In C, you have to manage memory yourself. It's a complicated task, but also quite powerful when used correctly.</p>
+                </div>
+                <div class="grid-container">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Performance</h3>
+                        <p>Properly managing memory optimizes program performance</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3>Control</h3>
+                        <p>You have full control over memory usage</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Efficiency</h3>
+                        <p>Use only as much memory as necessary</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Pointers and Memory</h3>
+                    <p>Pointers allow you to work directly with memory addresses, but must be handled with care to avoid damaging data.</p>
+                </div>
+            </div>
+            <div class="slide-number">3/10</div>
+        </div>
+
+        <!-- Slide 4: Types of Memory -->
+        <div class="slide" id="slide4">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/memory-types/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Types of Memory <span class="emoji">💾</span></h2>
+                <div class="grid-container">
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Static Memory</h3>
+                        <p>Reserved before program runs (compile-time)</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Dynamic Memory</h3>
+                        <p>Allocated while program runs (runtime)</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>Stack Memory</div>
+                        <p>Used for function variables</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <p>C has different memory types that serve different purposes:</p>
+                </div>
+                <div class="method-container">
+                    <div class="method-card">
+                        <div class="method-icon">📊</div>
+                        <div class="method-name">Static</div>
+                        <div class="method-desc">Fixed size, determined at compile time</div>
+                    </div>
+                    <div class="method-card">
+                        <div class="method-icon">🔄</div>
+                        <div class="method-name">Dynamic</div>
+                        <div class="method-desc">Flexible size, allocated at runtime</div>
+                    </div>
+                    <div class="method-card">
+                        <div class="method-icon">📚</div>
+                        <div class="method-name">Stack</div>
+                        <div class="method-desc">Automatic for function variables</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">4/10</div>
+        </div>
+
+        <!-- Slide 5: Static Memory -->
+        <div class="slide" id="slide5">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/static-memory/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Static Memory <span class="emoji">📊</span></h2>
+                <div class="card">
+                    <p>Static memory is memory that is reserved for variables before the program runs. This is also known as compile-time memory allocation.</p>
+                </div>
+                <div class="example-box">
+                    <div class="example-title">
+                        <span class="example-icon">📝</span>
+                        Example
+                    </div>
+                    <div class="code-block">
+                        <pre><span class="code-comment">// Static array allocation</span>
+<span class="code-keyword">int</span> students[20];
+<span class="code-function">printf</span>(<span class="code-string">"%zu"</span>, <span class="code-function">sizeof</span>(students)); <span class="code-comment">// 80 bytes (20 * 4)</span></pre>
+                    </div>
+                    <div class="card">
+                        <p>C automatically reserves space for 20 elements (80 bytes), but if only 12 students attend, 8 elements (32 bytes) are unused.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Limitations of Static Memory</h3>
+                    <ul class="point-list">
+                        <li>Cannot change size after compilation</li>
+                        <li>May waste memory if actual usage is less than allocated</li>
+                        <li>Not flexible for varying data sizes</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">5/10</div>
+        </div>
+
+        <!-- Slide 6: Dynamic Memory -->
+        <div class="slide" id="slide6">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/dynamic-memory/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Dynamic Memory <span class="emoji">🔄</span></h2>
+                <div class="card">
+                    <p>Dynamic memory is allocated after the program starts running, giving you full control over memory usage.</p>
+                </div>
+                <div class="example-box">
+                    <div class="example-title">
+                        <span class="example-icon">📝</span>
+                        Memory Allocation Functions
+                    </div>
+                    <div class="code-block">
+                        <pre><span class="code-comment">// Dynamic allocation with malloc</span>
+<span class="code-keyword">int</span> *ptr1 = <span class="code-function">malloc</span>(<span class="code-number">20</span> * <span class="code-keyword">sizeof</span>(<span class="code-keyword">int</span>));
+
+<span class="code-comment">// Dynamic allocation with calloc</span>
+<span class="code-keyword">int</span> *ptr2 = <span class="code-function">calloc</span>(<span class="code-number">20</span>, <span class="code-keyword">sizeof</span>(<span class="code-keyword">int</span>));
+
+<span class="code-comment">// Both allocate 80 bytes (20 * 4)</span></pre>
+                    </div>
+                    <div class="card">
+                        <p>malloc() allocates memory but doesn't initialize it.</p>
+                        <p>calloc() allocates memory and initializes all bytes to zero.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Benefits of Dynamic Memory</h3>
+                    <ul class="point-list">
+                        <li>Allocate only what you need</li>
+                        <li>Can resize as needed</li>
+                        <li>More efficient for varying data sizes</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">6/10</div>
+        </div>
+
+        <!-- Slide 7: Stack Memory -->
+        <div class="slide" id="slide7">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/stack-memory/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Stack Memory <span class="emoji">📚</span></h2>
+                <div class="card">
+                    <p>Stack memory is a type of dynamic memory reserved for variables declared inside functions.</p>
+                </div>
+                <div class="example-box">
+                    <div class="example-title">
+                        <example-icon>📝</span>
+                        Function Call Stack
+                    </div>
+                    <div class="code-block">
+                        <pre><span class="code-keyword">void</span> <span class="code-function">function1</span>() {
+  <span class="code-keyword">int</span> localVar = <span class="code-number">10</span>;
+  <span class="code-comment">// Local variable on stack</span>
+  <span class="code-comment">// Stack memory is allocated here</span>
+}
+
+<span class="code-keyword">void</span> <span class="code-function">function2</span>() {
+  <span class="code-keyword">int</span> localVar2 = <span class="code-number">20</span>;
+  <span class="code-comment">// New stack frame</span>
+}</pre>
+                    </div>
+                    <div class="card">
+                        <p>When a function is called, stack memory is allocated for its variables. When the function returns, the stack memory is freed.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Stack Overflow</h3>
+                    <p>Recursion that repeats itself too many times may take up too much stack memory, causing a stack overflow.</p>
+                </div>
+            </div>
+            <div class="slide-number">7/10</div>
+        </div>
+
+        <!-- Slide 8: Memory Allocation Functions -->
+        <div class="slide" id="slide8">
+            <div class="cartoon-bg" style="background-bg: url('https://picsum.photos/seed/memory-allocation/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Memory Allocation Functions <span class="emoji">🔧</span></h2>
+                <div class="card">
+                    <p>C provides functions to allocate and deallocate dynamic memory:</p>
+                </div>
+                <div class="grid-container">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3>malloc()</h3>
+                        <p>Allocates memory but doesn't initialize</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3>calloc()</h3>
+                        <p>Allocates and initializes to zero</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3>free()</h3>
+                        <p>Releases allocated memory</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>realloc()</h3>
+                        <p>Resizes allocated memory</p>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <div class="example-title">
+                        <span class="example-icon">📝</span>
+                        Example
+                    </div>
+                    <div class="code-block">
+                        <pre><span class="code-comment">// Allocate memory for an integer</span>
+<span class="code-keyword">int</span> *ptr = <span class="code-function">malloc</span>(<span class="code-keyword">sizeof</span>(<span class="code-keyword">int</span>));
+
+<span class="code-comment">// Allocate and initialize an array</span>
+<span class="code-keyword">int</span> *arr = <span class="code-function">calloc</span>(<span class="code-number">10</span>, <span class="code-keyword">sizeof</span>(<span class="code-keyword">int</span>));
+
+<span class="code-comment">// Free memory when done</span>
+<span class="code-function">free</span>(ptr);
+<span class="code-function">free</span>(arr);</pre>
+                    </div>
+                    <div class="card">
+                        <p>Always free memory when you're done with it to avoid memory leaks.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">8/10</div>
+        </div>
+
+        <!-- Slide 9: Proper Use of sizeof with Pointers -->
+        <div class="class="slide" id="slide9">
+            <div class="cartoon-bg" style="background-image: url('https://picsum.photos/seed/sizeof-pointers/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Proper Use of sizeof with Pointers <span class="emoji">🔍</span></h2>
+                <div class="card">
+                    <p>When working with pointers and dynamic memory, it's important to use sizeof correctly:</p>
+                </div>
+                <div class="example-box">
+                    <div class="example-title">
+                        <span class="example-icon">📝</span>
+                        Correct Usage
+                    </div>
+                    <div class="code-block">
+                        <pre><span class="code-comment">// Allocate memory for an integer</span>
+<span class="code-keyword">int</span> *ptr = <span class="code-function">malloc</span>(<span class="code-keyword">sizeof</span>(<span class="code-keyword">int</span>));
+
+<span class="code-comment">// Allocate memory for an array</span>
+<span class="code-keyword">int</span> *arr = <span class="code-function">calloc</span>(<span class="code-number">10</span>, <span class="code-keyword">sizeof</span>(<span class="code-keyword">int</span>));</pre>
+                    </div>
+                    <div class="card">
+                        <p>Using <span class="highlight">sizeof(*ptr)</span> instead of <span class="highlight">sizeof(ptr)</span> ensures you're allocating the correct amount of memory for the data type.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Common Mistake</h3>
+                    <div class="code-block">
+                        <pre><span class="code-comment">// This measures the pointer itself (usually 8 bytes)</span>
+<span class="code-keyword">int</span> size = <span class="code-function">sizeof</span>(ptr); <span class="code-comment">// Wrong!</span>
+
+<span class="code-comment">// This measures the data type pointed to (usually 4 bytes)</span>
+<span class="code-keyword">int</span> size = <span class="code-function">sizeof</span>(<span class="code-keyword">int</span>); <span class="code-comment">// Correct!</span></pre>
+                    </div>
+                    <div class="card">
+                        <p>Always use <span class="highlight">sizeof(*ptr)</span> when allocating memory for a pointer to a data type.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">9/10</div>
+        </div>
+
+        <!-- Slide 10: Example: Dynamic Memory Allocation -->
+        <div class="slide" id="slide10">
+            <div class="cartoon-bg" style="background-image: url('https://students-array/1920/1080.jpg');"></div>
+            <div class="slide-content">
+                <h2>Example: Dynamic Memory Allocation <span class="emoji">👥</span></h2>
+                <div class="card">
+                    <p>Let's improve the students array example with dynamic memory:</p>
+                </div>
+                <div class="example-box">
+                    <div class="example-title">
+                        <span class="example-icon">📝</span>
+                        Dynamic Students Array
+                    </div>
+                    <div class="code-block">
+                        <pre><span class="code-comment">#include &lt;stdio.h&gt;</span>
+<span class="code-keyword">#include &lt;stdlib.h&gt;</span>
+
+<span class="code-keyword">int</span> <span class="code-function">main</span>() {
+  <span class="code-comment">// Get number of students from user</span>
+  <span class="code-keyword">int</span> numStudents;
+  <span class="code-function">printf</span>(<span class="code-string">"Enter number of students: "</span>);
+  <span class="code-function">scanf</span>(<span class="code-string">"%d"</span>, &amp;numStudents);
+  
+  <span class="code-comment">// Allocate memory for students array</span>
+  <span class="code-keyword">int</span> *students = <span class="code-function">calloc</span>(numStudents, <span class="code-keyword">sizeof</span>(<span class="code-keyword">int</span>));
+  
+  <span class="code-comment">// Fill with student data</span>
+  <span class="code-keyword">for</span> (<span class="code-keyword">int</span> i = <span class="code-number">0</span>; i &lt; numStudents; i++) {
+    <span class="code-comment">// Fill with student data here</span>
+  }
+  
+  <span class="code-comment">// Use the array</span>
+  <span class="code-comment">// Free memory when done</span>
+  <span class="code-function">free</span>(students);
+  
+  <span class="code-keyword">return</span> <span class="code-number">0</span>;
+}</pre>
+                    </div>
+                    <div class="card">
+                        <p>This approach allocates exactly the amount of memory needed, avoiding waste.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">10/10</div>
+        </div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="navigation">
+        <div class="nav-dot active" onclick="scrollToSlide('slide1')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide2')"></div>
+        <div class="nav-dot" onclick="scrollToDiv('slide3')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide4')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide5')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide6')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide7')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide8')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide9')"></div>
+        <div class="nav-dot" onclick="scrollToSlide('slide10')"></div>
+    </div>
+
+    <script>
+        // Function to scroll to a specific slide
+        function scrollToSlide(slideId) {
+            document.getElementById(slideId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Update active navigation dot based on scroll position
+        window.addEventListener('scroll', function() {
+            const slides = document.querySelectorAll('.slide');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            let currentSlide = 0;
+            slides.forEach((slide, index) => {
+                const rect = slide.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                    currentSlide = index;
+                }
+            });
+            
+            navDots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

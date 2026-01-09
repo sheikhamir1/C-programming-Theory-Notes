@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C User Input - Interactive Presentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .gui-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .gui-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .gui-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .gui-details {
+        flex: 1;
+      }
+
+      .gui-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .embedded-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .embedded-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .embedded-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--success-color);
+        flex-shrink: 0;
+      }
+
+      .embedded-details {
+        flex: 1;
+      }
+
+      .embedded-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .adobe-products {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+      }
+
+      .adobe-product {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+        width: 30%;
+      }
+
+      .adobe-product:hover {
+        transform: translateY(-10px);
+        background-color: #e9ecef;
+      }
+
+      .adobe-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+      }
+
+      .adobe-name {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .output-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .type-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .pointer-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .memory-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 10px;
+      }
+
+      .memory-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .memory-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      .memory-label {
+        min-width: 150px;
+        text-align: right;
+        padding-right: 15px;
+        font-weight: 600;
+      }
+
+      .memory-value {
+        background-color: var(--light-bg);
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        padding: 8px 15px;
+        min-width: 120px;
+        text-align: center;
+      }
+
+      .string-visual {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .string-box {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 10px;
+        text-align: center;
+        font-family: monospace;
+        min-width: 120px;
+        position: relative;
+      }
+
+      .string-index {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 0.8rem;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .string-char {
+        display: inline-block;
+        margin: 0 2px;
+        padding: 5px 10px;
+        background-color: white;
+        border-radius: 4px;
+        font-family: monospace;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .adobe-products {
+          flex-direction: column;
+          align-items: center;
+        }
+        .adobe-product {
+          width: 80%;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(8)"></div>
+    </div>
+
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide" id="slide-0">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/c-user-input/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">C User Input <span class="emoji">👤</span></h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Getting input from users in C programming
+            <span class="emoji">📝</span>
+          </p>
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              Learn how to read and process user input with scanf() and related
+              functions
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">1/9</div>
+      </div>
+
+      <!-- Slide 2: Introduction to User Input -->
+      <div class="slide" id="slide-1">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/user-input-intro/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>User Input <span class="emoji">👤</span></h2>
+          <p>
+            You have already learned that printf() is used to output values in
+            C.
+          </p>
+          <p>To get user input, you can use the scanf() function:</p>
+        </div>
+        <div class="slide-number">2/9</div>
+      </div>
+
+      <!-- Slide 3: Basic Input Example -->
+      <div class="slide" id="slide-2">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/scanf-example/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Basic Input Example <span class="emoji">💻</span></h2>
+          <p>Output a number entered by the user:</p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-comment"
+                >// Create an integer variable that will store the number we get
+                from the user</span
+              ><br />
+              <span class="code-keyword">int</span> myNum;<br /><br /><br />
+              <span class="code-comment">// Ask the user to type a number</span
+              ><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Type a number: \n"</span
+              >);<br /><br />
+              <span class="code-comment"
+                >// Get and save the number the user types</span
+              ><br />
+              <span class="code-keyword">scanf</span>(<span class="code-string"
+                >"%d"</span
+              >, &myNum);
+            </div>
+
+            <div class="output-box">
+              <strong>Output:</strong> If user types 25, the program will store
+              25 in myNum
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">3/9</div>
+      </div>
+
+      <!-- Slide 4: Understanding scanf() -->
+      <div class="slide" id="slide-3">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/scanf-understanding/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Understanding scanf() <span class="emoji">🔍</span></h2>
+          <p>
+            The scanf() function takes two arguments: a format specifier of the
+            variable, and a reference operator (&) which stores the memory
+            address of the variable.
+          </p>
+
+          <div class="card">
+            <h3>How scanf() Works <span class="emoji">🧠</span></h3>
+            <div class="code-block">
+              <span class="code-comment"
+                >// The format specifier %d tells scanf to expect an
+                integer</span
+              ><br />
+              <span class="code-comment"
+                >// The &myNum argument tells scanf where to store the input
+                value</span
+              ><br />
+              <span class="code-comment"
+                >// The value at &myNum's memory address</span
+              >
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Memory Address</span>
+            </div>
+            <p>
+              Tip: You will learn more about memory addresses and functions in
+              the next chapter.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">4/9</div>
+      </div>
+
+      <!-- Slide 5: Multiple Inputs -->
+      <div class="slide" id="slide-4">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/multiple-inputs/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Multiple Inputs <span class="emoji">📊</span></h2>
+          <p>
+            The scanf() function also allow multiple inputs (an integer and a
+            character in the following example):
+          </p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-comment"
+                >// Create an int and a char variable</span
+              ><br />
+              <span class="code-keyword">int</span> myNum;<br />
+              <span class="code-keyword">char</span> myChar;<br /><br /><br />
+              <span class="code-comment"
+                >// Ask the user to type a number AND a character and press
+                enter: \n</span
+              ><br />
+              <span class="code-comment"
+                >// Get and save the number AND character the user types</span
+              ><br />
+              <span class="code-keyword">scanf</span>(<span class="code-string"
+                >"%d %c"</span
+              >, &myNum, &myChar);
+            </div>
+
+            <div class="output-box">
+              <strong>Output:</strong> If user types 25 and 'J', the program
+              will store 25 in myNum and 'J' in myChar
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">5/9</div>
+      </div>
+
+      <!-- Slide 6: String Input -->
+      <div class="slide" id="slide-5">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/string-input/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>String Input <span class="emoji">📝</span></h2>
+          <p>You can also get a string entered by the user:</p>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <div class="code-block">
+              <span class="code-comment">// Create a string variable</span
+              ><br />
+              <span class="code-keyword">char</span> firstName[<span
+                class="code-number"
+                >30</span
+              >];<br /><br /><br />
+              <span class="code-comment"
+                >// Ask the user to input some text</span
+              ><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Enter your first name: \n"</span
+              >);<br /><br />
+              <span class="code-comment"
+                >// Get and save the text the user types</span
+              ><br />
+              <span class="code-keyword">scanf</span>(<span class="code-string"
+                >"%s"</span
+              >, firstName);
+            </div>
+
+            <div class="output-box">
+              <strong>Output:</strong> If user types "John", the program will
+              store "John" in firstName
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">6/9</div>
+      </div>
+
+      <!-- Slide 7: fgets() for String Input -->
+      <div class="slide" id="slide-6">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/fgets-function/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>fgets() for String Input <span class="emoji">📝</span></h2>
+          <p>
+            However, scanf() has some limitations: it considers space
+            (whitespace, tabs, etc.) as a terminating character, which means it
+            can only display a single word (even if you type multiple words).
+          </p>
+
+          <div class="card">
+            <h3>Alternative: fgets() <span class="emoji">🔄</span></h3>
+            <p>
+              For reading entire lines of text, you can use the fgets()
+              function. Note that you must include the following arguments: name
+              of the string variable, sizeof(string_name), and stdin:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">char</span> fullName[<span
+                class="code-number"
+                >30</span
+              >];<br /><br /><br />
+              <span class="code-comment"
+                >// Ask the user to input some text</span
+              ><br />
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Type your full name: \n"</span
+              >);<br /><br />
+              <span class="code-keyword">fgets</span>(fullName,
+              <span class="code-keyword">sizeof</span>(fullName), stdin);
+            </div>
+
+            <div class="output-box">
+              <strong>Output:</strong> If user types "John Doe", the program
+              will store "John Doe" in fullName
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">7/9</div>
+      </div>
+
+      <!-- Slide 8: String Input Limitations -->
+      <div class="slide" id="slide-7">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/string-limitations/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>String Input Limitations <span class="emoji">⚠️</span></h2>
+          <p>
+            When working with strings in C, it's important to understand their
+            limitations:
+          </p>
+
+          <div class="card">
+            <h3>Fixed Size Arrays <span class="emoji">📏�️</span></h3>
+            <p>
+              String arrays in C have a fixed size, which means you can't store
+              more characters than the array was declared for. This can lead to
+              buffer overflow if you try to store too much data.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Buffer Overflow <span class="emoji">⚠️</span></h3>
+            <p>
+              If you try to store more characters than the array can hold, it
+              can cause a buffer overflow, which may lead to security
+              vulnerabilities or program crashes.
+            </p>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Best Practice</span>
+            </div>
+            <p>
+              Always ensure your string arrays are large enough to hold the
+              maximum expected input, and consider using safer functions like
+              fgets() instead of scanf().
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">8/9</div>
+      </div>
+
+      <!-- Slide 9: Summary -->
+      <div class="slide" id="slide-8">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/user-input-summary/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Summary <span class="emoji">📚</span></h2>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">👤</div>
+              <h3>User Input Functions</h3>
+              <p>scanf() reads formatted input</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📝</div>
+              <h3>fgets() reads entire lines</h3>
+              <p>Good for multi-word input</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h3>Understanding Memory Addresses</h3>
+              <p>scanf() uses reference operator (&)</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⚠️</div>
+              <h3>Be Aware of Limitations</h3>
+              <p>Fixed-size arrays can cause buffer overflow</p>
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Key Points</span>
+            </div>
+            <ul class="point-list">
+              <li>Use scanf() for simple, predictable input</li>
+              <li>Use fgets() for multi-word input or unknown length</li>
+              <li>Always check return values of input functions</li>
+              <li>Be aware of buffer overflow with fixed-size arrays</li>
+            </ul>
+          </div>
+
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              User input is essential for interactive programs!
+              <span class="emoji">👤</span><br />
+              Understanding how to read and process user input is a fundamental
+              skill in C programming.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">9/9</div>
+      </div>
+    </div>
+
+    <script>
+      // Function to scroll to a specific slide
+      function scrollToSlide(slideIndex) {
+        const slide = document.getElementById(`slide-${slideIndex}`);
+        slide.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update navigation dots based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

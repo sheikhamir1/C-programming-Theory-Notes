@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Preprocessor and Organize Code</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .preprocessor-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        border-left: 5px solid var(--info-color);
+      }
+
+      .preprocessor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .preprocessor-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: var(--info-color);
+        flex-shrink: 0;
+      }
+
+      .preprocessor-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--info-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .modular-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        border-left: 5px solid var(--success-color);
+      }
+
+      .modular-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .modular-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: var(--success-color);
+        flex-shrink: 0;
+      }
+
+      .modular-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--success-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .file-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .file-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--success-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--success-color);
+        margin: 0 10px;
+      }
+
+      .flow-diagram {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .flow-step {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px;
+        width: 180px;
+        text-align: center;
+      }
+
+      .flow-arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 5px;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .flow-diagram {
+          flex-direction: column;
+        }
+        .flow-arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/preprocessor-macros/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">
+            C Preprocessor and Organize Code <span class="emoji">🔧</span>
+          </h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Understanding Preprocessor Directives and Modular Programming
+          </p>
+          <div class="feature-card" style="margin-top: 40px">
+            <div class="feature-icon">🔧</div>
+            <h3>What We'll Cover</h3>
+            <ul class="point-list" style="text-align: left">
+              <li>Preprocessor directives and macros</li>
+              <li>Using #include to add header files</li>
+              <li>Creating macros with #define</li>
+              <li>Conditional compilation with #ifdef and #ifndef</li>
+              <li>Organizing code with modular programming</li>
+              <li>Creating your own header files</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">1/14</div>
+      </div>
+
+      <!-- Slide 2: Preprocessor Introduction -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/preprocessor-intro/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Preprocessor and Macros <span class="emoji">🔧</span></h2>
+          <div class="card">
+            <h3>What is the Preprocessor?</h3>
+            <p>
+              In C, the preprocessor runs before the actual compilation begins.
+              It handles things like including files and defining macros.
+            </p>
+            <p>
+              Preprocessor commands begin with a # symbol and are called
+              directives.
+            </p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>Source Code</p>
+              <p>.c file with directives</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Preprocessor</p>
+              <p>Processes directives</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>Compiler</p>
+              <p>Compiles processed code</p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Key Point</div>
+              <p>
+                The preprocessor modifies your source code before compilation,
+                but these changes are not visible in your original source files.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">2/14</div>
+      </div>
+
+      <!-- Slide 3: #include Directive -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/include-directive/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>#include - Include Header Files <span class="emoji">📁</span></h2>
+          <div class="preprocessor-card">
+            <div class="preprocessor-title">
+              <span class="preprocessor-icon">📁</span>
+              Adding Libraries and Header Files
+            </div>
+            <p>
+              You have already seen the #include directive many times - It tells
+              the compiler to include a file.
+            </p>
+            <p>It is used to add libraries or custom header files:</p>
+            <div class="code-block">
+              <span class="code-preprocessor">#include</span>
+              <span class="code-string">&lt;stdio.h&gt;</span><br />
+              <span class="code-preprocessor">#include</span>
+              <span class="code-string">"myfile.h"</span>
+            </div>
+            <p>
+              Use angle brackets &lt; &gt; for standard libraries and double
+              quotes " " for your own files.
+            </p>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Tip</div>
+              <p>
+                The most commonly used libraries can be found in our C Reference
+                Documentation.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">3/14</div>
+      </div>
+
+      <!-- Slide 4: #define Directive -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/define-directive/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>#define - Create a Macro <span class="emoji">🏷️</span></h2>
+          <div class="preprocessor-card">
+            <div class="preprocessor-title">
+              <span class="preprocessor-icon">🏷️</span>
+              Defining Constants and Code Shortcuts
+            </div>
+            <p>
+              A macro is a name that represents a value (like PI), or a piece of
+              code, defined using the #define directive.
+            </p>
+            <p>
+              In the example below, PI is replaced with 3.14 before the program
+              is compiled.
+            </p>
+            <p>
+              This means that every time PI appears in the code, it will be
+              replaced with 3.14:
+            </p>
+            <div class="code-block">
+              <span class="code-preprocessor">#define</span> PI 3.14<br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Value of PI: %.2f\n"</span
+              >, PI);<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+          </div>
+          <div class="file-visual">
+            <div class="file-block">
+              <p>Before Preprocessing</p>
+              <p>printf("Value: %.2f\n", PI);</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="file-block">
+              <p>After Preprocessing</p>
+              <p>printf("Value: %.2f\n", 3.14);</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">4/14</div>
+      </div>
+
+      <!-- Slide 5: Macros with Parameters -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/macro-parameters/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Macros with Parameters <span class="emoji">🔧</span></h2>
+          <div class="preprocessor-card">
+            <div class="preprocessor-title">
+              <span class="preprocessor-icon">🔧</span>
+              Function-like Macros
+            </div>
+            <p>Macros can also take parameters, like a function:</p>
+            <div class="code-block">
+              <span class="code-preprocessor">#define</span> SQUARE(x) ((x) *
+              (x))<br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Square of 4: %d\n"</span
+              >, SQUARE(4));<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <p>
+              Macros with parameters work like shortcuts, but be careful with
+              parentheses to avoid mistakes.
+            </p>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">⚠️</div>
+            <div class="component-details">
+              <div class="component-name">Parentheses are Important</div>
+              <p>
+                Notice the extra parentheses around x in the SQUARE macro. This
+                prevents issues with operator precedence when the macro is
+                expanded.
+              </p>
+            </div>
+          </div>
+          <div class="file-visual">
+            <div class="file-block">
+              <p>Before Preprocessing</p>
+              <p>SQUARE(4)</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="file-block">
+              <p>After Preprocessing</p>
+              <p>((4) * (4))</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">5/14</div>
+      </div>
+
+      <!-- Slide 6: Conditional Compilation -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/conditional-compilation/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            #ifdef and #ifndef - Conditional Compilation
+            <span class="emoji">🔀</span>
+          </h2>
+          <div class="preprocessor-card">
+            <div class="preprocessor-title">
+              <span class="preprocessor-icon">🔀</span>
+              Including Code Conditionally
+            </div>
+            <p>
+              The #ifdef and #ifndef directives let you include or skip parts of
+              the code depending on whether a macro is defined.
+            </p>
+            <p>
+              This is called conditional compilation, and it's useful for
+              debugging or creating different versions of a program.
+            </p>
+            <div class="code-block">
+              <span class="code-preprocessor">#define</span> DEBUG<br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-preprocessor">#ifdef</span>
+              DEBUG<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"Debug mode is ON\n"</span>);<br />
+              &nbsp;&nbsp;<span class="code-preprocessor">#endif</span><br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <p>
+              If DEBUG is defined, the message will be printed. If it's not
+              defined, that part of the code is skipped.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">6/14</div>
+      </div>
+
+      <!-- Slide 7: Organize Code Introduction -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/organize-code-intro/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            Organize Your Code - Modular Programming
+            <span class="emoji">🏗️</span>
+          </h2>
+          <div class="card">
+            <h3>What is Modular Programming?</h3>
+            <p>
+              In C programming, modular programming means splitting your code
+              into smaller, reusable parts.
+            </p>
+            <p>This makes your code easier to read, maintain, and debug.</p>
+          </div>
+          <div class="application-card">
+            <div class="application-icon">📁</div>
+            <div class="application-title">File Organization</div>
+            <div class="application-desc">
+              <p>
+                The most common way to organize C programs is by using separate
+                .c files and .h header files.
+              </p>
+              <p>
+                Even though this approach is not required for small beginner
+                programs, it is very useful for larger projects or more
+                experienced programmers who want to keep their code clean and
+                well-structured.
+              </p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">📚</div>
+            <div class="component-details">
+              <div class="component-name">Next Chapter</div>
+              <p>
+                In the next chapter, you will learn how to create your own
+                header files and organize your code across multiple files using
+                "modular programming".
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">7/14</div>
+      </div>
+
+      <!-- Slide 8: Why Use Header Files -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/header-files/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Why Use Header Files? <span class="emoji">📄</span></h2>
+          <div class="modular-card">
+            <div class="modular-title">
+              <span class="modular-icon">📄</span>
+              Benefits of Header Files
+            </div>
+            <ul class="point-list">
+              <li>To declare functions that are defined in another file</li>
+              <li>To share variables, constants, or macros across files</li>
+              <li>To organize your code into logical modules</li>
+            </ul>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Tip</div>
+              <p>
+                Header files usually contain function declarations, macros, and
+                struct definitions.
+              </p>
+            </div>
+          </div>
+          <div class="file-visual">
+            <div class="file-block">
+              <p>.h File</p>
+              <p>Declarations</p>
+            </div>
+            <div class="arrow">↔</div>
+            <div class="file-block">
+              <p>.c File</p>
+              <p>Definitions</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">8/14</div>
+      </div>
+
+      <!-- Slide 9: Creating a Header File -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/creating-header/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Creating a Header File <span class="emoji">📝</span></h2>
+          <div class="modular-card">
+            <div class="modular-title">
+              <span class="modular-icon">📝</span>
+              Example: Creating a Header File
+            </div>
+            <p>
+              In this example, you will learn how to create your own header file
+              and use it to organize code across multiple files.
+            </p>
+            <p>
+              Let's create a simple calculator module with a header file and a
+              source file.
+            </p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>1. calc.h</p>
+              <p>Header file with declarations</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>2. calc.c</p>
+              <p>Source file with definitions</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>3. main.c</p>
+              <p>Main program using the module</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">9/14</div>
+      </div>
+
+      <!-- Slide 10: calc.h File -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/calch-file/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>calc.h File <span class="emoji">📄</span></h2>
+          <div class="modular-card">
+            <div class="modular-title">
+              <span class="modular-icon">📄</span>
+              1. calc.h - Header File
+            </div>
+            <p>
+              Start by creating a header file named calc.h to declare the
+              functions:
+            </p>
+            <div class="code-block">
+              <span class="code-preprocessor">#ifndef</span> CALC_H<br />
+              <span class="code-preprocessor">#define</span> CALC_H<br /><br />
+
+              <span class="code-keyword">int</span> add(<span
+                class="code-keyword"
+                >int</span
+              >
+              x, <span class="code-keyword">int</span> y);<br />
+              <span class="code-keyword">int</span> subtract(<span
+                class="code-keyword"
+                >int</span
+              >
+              x, <span class="code-keyword">int</span> y);<br /><br />
+
+              <span class="code-preprocessor">#endif</span>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Include Guard</div>
+              <p>
+                The #ifndef, #define, and #endif lines are called an include
+                guard. They prevent the file from being included more than once
+                by mistake, which can cause errors during compilation.
+              </p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">📝</div>
+            <div class="component-details">
+              <div class="component-name">Function Declarations</div>
+              <p>
+                This file itself contains declarations of two functions: add()
+                and subtract().
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">10/14</div>
+      </div>
+
+      <!-- Slide 11: calc.c File -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/calcc-file/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>calc.c File <span class="emoji">💻</span></h2>
+          <div class="modular-card">
+            <div class="modular-title">
+              <span class="modular-icon">💻</span>
+              2. calc.c - Source File
+            </div>
+            <p>Next, write the function definitions inside your calc.c file:</p>
+            <div class="code-block">
+              <span class="code-preprocessor">#include</span>
+              <span class="code-string">"calc.h"</span><br /><br />
+
+              <span class="code-keyword">int</span> add(<span
+                class="code-keyword"
+                >int</span
+              >
+              x, <span class="code-keyword">int</span> y) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> x + y;<br />
+              }<br /><br />
+
+              <span class="code-keyword">int</span> subtract(<span
+                class="code-keyword"
+                >int</span
+              >
+              x, <span class="code-keyword">int</span> y) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> x - y;<br />
+              }
+            </div>
+            <p>This file defines the functions declared in calc.h.</p>
+          </div>
+          <div class="file-visual">
+            <div class="file-block">
+              <p>calc.h</p>
+              <p>Declarations</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="file-block">
+              <p>calc.c</p>
+              <p>Definitions</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">11/14</div>
+      </div>
+
+      <!-- Slide 12: main.c File -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/mainc-file/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>main.c File <span class="emoji">🚀</span></h2>
+          <div class="modular-card">
+            <div class="modular-title">
+              <span class="modular-icon">🚀</span>
+              3. main.c - Main Program
+            </div>
+            <p>
+              Finally, write the main program in main.c and include the header
+              file to use the calculator functions:
+            </p>
+            <div class="code-block">
+              <span class="code-preprocessor">#include</span>
+              <span class="code-string">&lt;stdio.h&gt;</span><br />
+              <span class="code-preprocessor">#include</span>
+              <span class="code-string">"calc.h"</span><br /><br />
+
+              <span class="code-keyword">int</span> main() {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"5 + 5 = %d\n"</span
+              >, add(5, 5));<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"6 - 4 = %d\n"</span
+              >, subtract(6, 4));<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> 0;<br />
+              }
+            </div>
+            <div
+              class="code-block"
+              style="background-color: #e8f5e9; color: #333"
+            >
+              Result:<br />
+              5 + 5 = 10<br />
+              6 - 4 = 2
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">12/14</div>
+      </div>
+
+      <!-- Slide 13: Compiling Multiple Files -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/compiling-multiple/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>How to Compile Multiple Files <span class="emoji">🔨</span></h2>
+          <div class="modular-card">
+            <div class="modular-title">
+              <span class="modular-icon">🔨</span>
+              Building from Multiple Source Files
+            </div>
+            <p>
+              When your program is split across multiple files, you need to
+              compile them together. For example:
+            </p>
+            <div class="code-block">gcc main.c calc.c -o program</div>
+            <p>
+              This tells the compiler to build one executable named program from
+              both main.c and calc.c.
+            </p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <p>main.c</p>
+              <p>Main program</p>
+            </div>
+            <div class="flow-arrow">+</div>
+            <div class="flow-step">
+              <p>calc.c</p>
+              <p>Calculator module</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <p>program</p>
+              <p>Executable</p>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">💡</div>
+            <div class="component-details">
+              <div class="component-name">Build Process</div>
+              <p>
+                The compiler automatically links the function calls in main.c
+                with their definitions in calc.c, thanks to the declarations in
+                calc.h.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">13/14</div>
+      </div>
+
+      <!-- Slide 14: Summary -->
+      <div class="slide">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/preprocessor-summary/1200/800.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Summary <span class="emoji">📝</span></h2>
+          <div class="summary-box">
+            <h3>Key Takeaways</h3>
+            <ul class="point-list" style="color: white">
+              <li>
+                The preprocessor runs before compilation and processes
+                directives that start with #
+              </li>
+              <li>#include adds header files to your program</li>
+              <li>#define creates macros that represent values or code</li>
+              <li>
+                #ifdef and #ifndef allow conditional compilation based on
+                whether a macro is defined
+              </li>
+              <li>
+                Modular programming organizes code into separate files for
+                better maintainability
+              </li>
+              <li>
+                Header files (.h) contain declarations, while source files (.c)
+                contain definitions
+              </li>
+              <li>
+                Include guards (#ifndef/#define/#endif) prevent header files
+                from being included multiple times
+              </li>
+              <li>
+                Multiple source files are compiled together using commands like
+                "gcc main.c calc.c -o program"
+              </li>
+            </ul>
+          </div>
+          <div class="grid-container" style="margin-top: 30px">
+            <div class="feature-card">
+              <div class="feature-icon">✅</div>
+              <h4>Preprocessor</h4>
+              <p>Use #include for libraries</p>
+              <p>Use #define for constants</p>
+              <p>Use #ifdef for conditional code</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">✅</div>
+              <h4>Modular Code</h4>
+              <p>Separate declarations from definitions</p>
+              <p>Use include guards in headers</p>
+              <p>Compile all source files together</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">14/14</div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(8)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(9)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(10)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(11)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(12)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(13)"></div>
+    </div>
+
+    <script>
+      function scrollToSlide(index) {
+        const slides = document.querySelectorAll(".slide");
+        slides[index].scrollIntoView({ behavior: "smooth" });
+
+        // Update active navigation dot
+        const navDots = document.querySelectorAll(".nav-dot");
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[index].classList.add("active");
+      }
+
+      // Update active navigation dot based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot) => dot.classList.remove("active"));
+        navDots[currentSlide].classList.add("active");
+      });
+    </script>
+  </body>
+</html>

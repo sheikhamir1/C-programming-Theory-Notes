@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C Short Hand If Else, Nested If, and Logical Operators</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --info-color: #9b59b6;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .slide-container {
+        width: 100%;
+        scroll-snap-type: y mandatory;
+      }
+
+      .slide {
+        min-height: 100vh;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background-color: white;
+      }
+
+      .slide:nth-child(even) {
+        background-color: var(--light-bg);
+      }
+
+      .slide-content {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 2px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 25px 0 15px;
+        color: var(--secondary-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .emoji {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin: 0 5px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .component-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .component-card:hover {
+        background-color: #e9ecef;
+        transform: translateX(10px);
+      }
+
+      .component-icon {
+        font-size: 2rem;
+        margin-right: 20px;
+        color: var(--secondary-color);
+      }
+
+      .component-details {
+        flex: 1;
+      }
+
+      .component-name {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+      }
+
+      .navigation {
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+      }
+
+      .nav-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        margin: 15px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-dot.active {
+        background-color: var(--primary-color);
+        transform: scale(1.3);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: scale(1.05);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .principle-box {
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: left;
+        position: relative;
+      }
+
+      .principle-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .principle-icon {
+        margin-right: 10px;
+        color: var(--secondary-color);
+      }
+
+      .summary-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.2);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        color: #888;
+      }
+
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        font-family: monospace;
+        overflow-x: auto;
+      }
+
+      .code-comment {
+        color: #6a9955;
+      }
+
+      .code-keyword {
+        color: #569cd6;
+      }
+
+      .code-string {
+        color: #ce9178;
+      }
+
+      .code-function {
+        color: #dcdcaa;
+      }
+
+      .code-number {
+        color: #b5cea8;
+      }
+
+      .cartoon-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .application-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--info-color)
+        );
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .application-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
+
+      .application-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .application-desc {
+        margin-bottom: 15px;
+      }
+
+      .gui-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .gui-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .gui-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--secondary-color);
+        flex-shrink: 0;
+      }
+
+      .gui-details {
+        flex: 1;
+      }
+
+      .gui-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .embedded-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+      }
+
+      .embedded-feature:hover {
+        transform: translateX(10px);
+        background-color: #e9ecef;
+      }
+
+      .embedded-icon {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--success-color);
+        flex-shrink: 0;
+      }
+
+      .embedded-details {
+        flex: 1;
+      }
+
+      .embedded-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .adobe-products {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+      }
+
+      .adobe-product {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: var(--light-bg);
+        transition: all 0.3s ease;
+        width: 30%;
+      }
+
+      .adobe-product:hover {
+        transform: translateY(-10px);
+        background-color: #e9ecef;
+      }
+
+      .adobe-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+      }
+
+      .adobe-name {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .point-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .point-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+      }
+
+      .point-list li:before {
+        content: "•";
+        position: absolute;
+        left: 10px;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .output-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .type-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background-color: var(--secondary-color);
+        color: white;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .pointer-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .memory-block {
+        background-color: var(--light-bg);
+        border: 2px solid var(--secondary-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 15px;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .arrow {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin: 0 10px;
+      }
+
+      .memory-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+      }
+
+      .memory-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      .memory-label {
+        min-width: 150px;
+        text-align: right;
+        padding-right: 15px;
+        font-weight: 600;
+      }
+
+      .memory-value {
+        background-color: var(--light-bg);
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        padding: 8px 15px;
+        min-width: 120px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        h2 {
+          font-size: 2rem;
+        }
+        h3 {
+          font-size: 1.5rem;
+        }
+        .slide {
+          padding: 40px 20px;
+        }
+        .navigation {
+          display: none;
+        }
+        .adobe-products {
+          flex-direction: column;
+          align-items: center;
+        }
+        .adobe-product {
+          width: 80%;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navigation">
+      <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(6)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(7)"></div>
+      <div class="nav-dot" onclick="scrollToSlide(8)"></div>
+    </div>
+
+    <div class="slide-container">
+      <!-- Slide 1: Title -->
+      <div class="slide" id="slide-0">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/c-short-hand-if-else/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h1 class="floating">
+            C Short Hand If Else, Nested If, and Logical Operators
+            <span class="emoji">🔀</span>
+          </h1>
+          <p style="text-align: center; font-size: 1.3rem; margin-top: 30px">
+            Advanced conditional statements in C programming
+            <span class="emoji">🧠</span>
+          </p>
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              Learn about ternary operators, nested conditions, and logical
+              operators <span class="emoji">🎓</span>
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">1/9</div>
+      </div>
+
+      <!-- Slide 2: Short Hand If Else (Ternary Operator) -->
+      <div class="slide" id="slide-1">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/ternary-operator/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>
+            Short Hand If...Else (Ternary Operator)
+            <span class="emoji">➡️</span>
+          </h2>
+          <p>
+            There is also a short-hand if...else, known as ternary operator
+            because it uses three operands.
+          </p>
+
+          <div class="card">
+            <h3>How It Works <span class="emoji">⚙️</span></h3>
+            <p>
+              The ternary operator returns a value based on a condition: if
+              condition is true, it returns first value; otherwise, it returns
+              second value.
+            </p>
+            <p>
+              It can be used to replace multiple lines of code with a single
+              line, and is often used to replace simple if...else statements:
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Syntax <span class="emoji">📝</span></h3>
+            <div class="code-block">
+              variable = (condition) ? expressionTrue : expressionFalse;
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Traditional If...Else <span class="emoji">📜</span></h3>
+            <p>Instead of writing:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> time =
+              <span class="code-number">20</span>;<br />
+              <span class="code-keyword">if</span> (time <
+              <span class="code-number">18</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Good day."</span
+              >);<br />
+              } <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Good evening."</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Ternary Operator <span class="emoji">⚡</span></h3>
+            <p>You can simply write:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> time =
+              <span class="code-number">20</span>;<br />
+              (time < <span class="code-number">18</span>) ?
+              <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Good day."</span
+              >) : <span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Good evening."</span
+              >);
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <div class="principle-title">
+              <span class="principle-icon">💡</span>
+              <span>Choice</span>
+            </div>
+            <p>
+              It is completely up to you if you want to use traditional
+              if...else statement or ternary operator.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">2/9</div>
+      </div>
+
+      <!-- Slide 3: Nested If -->
+      <div class="slide" id="slide-2">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/nested-if/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Nested If <span class="emoji">🎯</span></h2>
+          <p>
+            You can also place an if statement inside another if. This is called
+            a nested if statement.
+          </p>
+
+          <div class="card">
+            <h3>Purpose <span class="emoji">🎯</span></h3>
+            <p>
+              A nested if lets you check for a condition only if another
+              condition is already true.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Syntax <span class="emoji">📝</span></h3>
+            <div class="code-block">
+              <span class="code-keyword">if</span> (condition1) {<br />
+              &nbsp;&nbsp;<span class="code-comment"
+                >// code to run if condition1 is true</span
+              ><br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (condition2) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"
+                >// code to run if both condition1 and condition2 are true</span
+              ><br />
+              &nbsp;&nbsp;}<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Example <span class="emoji">💻</span></h3>
+            <p>
+              In this example, we first check if x is greater than 10. If it is,
+              we then check if y is greater than 20:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> x =
+              <span class="code-number">15</span>;<br />
+              <span class="code-keyword">int</span> y =
+              <span class="code-number">25</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (x >
+              <span class="code-number">10</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"x is greater than 10\n"</span
+              >);<br /><br />
+
+              &nbsp;&nbsp;<span class="code-comment">// Nested if</span><br />
+              &nbsp;&nbsp;<span class="code-keyword">if</span> (y >
+              <span class="code-number">20</span>) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+              >(<span class="code-string">"y is also greater than 20\n"</span
+              >);<br />
+              &nbsp;&nbsp;}<br />
+              }
+            </div>
+            <div class="output-box">
+              <strong>Result:</strong><br />
+              x is greater than 10<br />
+              y is also greater than 20
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">3/9</div>
+      </div>
+
+      <!-- Slide 4: Nested If Real-Life Example -->
+      <div class="slide" id="slide-3">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/voting-example/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Real-Life Example <span class="emoji">🌍</span></h2>
+          <p>
+            Nested if statements are useful when you need to test multiple
+            conditions that depend on each other. For example, checking if a
+            person is old enough to vote, and if they are a citizen:
+          </p>
+
+          <div class="code-block">
+            <span class="code-keyword">int</span> age =
+            <span class="code-number">20</span>;<br />
+            <span class="code-keyword">bool</span> isCitizen =
+            <span class="code-keyword">true</span>;<br /><br />
+
+            <span class="code-keyword">if</span> (age >=
+            <span class="code-number">18</span>) {<br />
+            &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+              class="code-string"
+              >"Old enough to vote.\n"</span
+            >);<br /><br />
+
+            &nbsp;&nbsp;<span class="code-keyword">if</span> (isCitizen) {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+            >(<span class="code-string"
+              >"And you are a citizen, so you can vote!\n"</span
+            >);<br />
+            &nbsp;&nbsp;} <span class="code-keyword">else</span> {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">printf</span
+            >(<span class="code-string"
+              >"But you must be a citizen to vote.\n"</span
+            >);<br />
+            &nbsp;&nbsp;} <br />
+            } <span class="code-keyword">else</span> {<br />
+            &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+              class="code-string"
+              >"Not old enough to vote.\n"</span
+            >);<br />
+            }
+          </div>
+
+          <div class="output-box">
+            <strong>Result:</strong><br />
+            Old enough to vote.<br />
+            And you are a citizen, so you can vote!
+          </div>
+
+          <div class="card">
+            <h3>Notes <span class="emoji">📝</span></h3>
+            <ul class="point-list">
+              <li>
+                You can nest as many if statements as you want, but avoid making
+                code too deep - it can become hard to read.
+              </li>
+              <li>
+                Nested if is often used together with else and else if for more
+                complex decision making.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">4/9</div>
+      </div>
+
+      <!-- Slide 5: Logical Operators in Conditions -->
+      <div class="slide" id="slide-4">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/logical-operators/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Logical Operators in Conditions <span class="emoji">🔗</span></h2>
+          <p>
+            You can combine or reverse conditions using logical operators. These
+            work together with if, else, and else if to build more complex
+            decisions.
+          </p>
+
+          <div class="grid-container">
+            <div class="feature-card">
+              <div class="feature-icon">&&</div>
+              <h3>AND</h3>
+              <p>All conditions must be true</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">||</div>
+              <h3>OR</h3>
+              <p>At least one condition must be true</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">!</div>
+              <h3>NOT</h3>
+              <p>Reverses a condition (true → false, false → true)</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Complex Decisions <span class="emoji">🧠</span></h3>
+            <p>
+              Logical operators allow you to create more complex conditions by
+              combining multiple comparisons:
+            </p>
+            <ul class="point-list">
+              <li>AND (&&) - all conditions must be true</li>
+              <li>OR (||) - at least one condition must be true</li>
+              <li>
+                NOT (!) - reverses a condition (true → false, false → true)
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">5/9</div>
+      </div>
+
+      <!-- Slide 6: Logical Operators Examples -->
+      <div class="slide" id="slide-5">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/logical-examples/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Logical Operators Examples <span class="emoji">💻</span></h2>
+
+          <div class="card">
+            <h3>AND (&&) <span class="emoji">🔗</span></h3>
+            <p>Use AND (&&) when both conditions must be true:</p>
+            <p>Test if a is greater than b, and if c is greater than a:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> a =
+              <span class="code-number">200</span>;<br />
+              <span class="code-keyword">int</span> b =
+              <span class="code-number">33</span>;<br />
+              <span class="code-keyword">int</span> c =
+              <span class="code-number">500</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (a > b && c > a) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Both conditions are true\n"</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>OR (||) <span class="emoji">🔀</span></h3>
+            <p>Use OR (||) when at least one of conditions can be true:</p>
+            <p>Test if a is greater than b, or if a is greater than c:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> a =
+              <span class="code-number">200</span>;<br />
+              <span class="code-keyword">int</span> b =
+              <span class="code-number">33</span>;<br />
+              <span class="code-keyword">int</span> c =
+              <span class="code-number">500</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (a > b || a > c) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"At least one condition is true\n"</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>NOT (!) <span class="emoji">❌</span></h3>
+            <p>The NOT operator (!) reverses a condition:</p>
+            <ul class="point-list">
+              <li>If a condition is true, ! makes it false.</li>
+              <li>If a condition is false, ! makes it true.</li>
+            </ul>
+            <p>
+              This is useful when you want to check that something is not the
+              case:
+            </p>
+            <p>Test if a is not greater than b:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> a =
+              <span class="code-number">33</span>;<br />
+              <span class="code-keyword">int</span> b =
+              <span class="code-number">200</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (!(a > b)) { <br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"a is NOT greater than b\n"</span
+              >);<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">6/9</div>
+      </div>
+
+      <!-- Slide 7: Logical Operators Real-Life Example -->
+      <div class="slide" id="slide-6">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/access-control/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>Real-Life Example <span class="emoji">🔐</span></h2>
+          <p>
+            In real programs, logical operators are often used for access
+            control. For example, to get access to a system, there are specific
+            requirements:
+          </p>
+
+          <p>
+            You must be logged in, and then you either need to be an admin, or
+            have a high security clearance (level 1 or 2):
+          </p>
+
+          <div class="code-block">
+            <span class="code-keyword">bool</span> isLoggedIn =
+            <span class="code-keyword">true</span>;<br />
+            <span class="code-keyword">bool</span> isAdmin =
+            <span class="code-keyword">false</span>;<br />
+            <span class="code-keyword">int</span> securityLevel =
+            <span class="code-number">3</span>;
+            <span class="code-comment">// 1 = highest</span><br /><br />
+
+            <span class="code-keyword">if</span> (isLoggedIn && (isAdmin ||
+            securityLevel <= <span class="code-number">2</span>)) {<br />
+            &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+              class="code-string"
+              >"Access granted\n"</span
+            >);<br />
+            } <span class="code-keyword">else</span> {<br />
+            &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+              class="code-string"
+              >"Access denied\n"</span
+            >);<br />
+            }
+          </div>
+
+          <div class="card">
+            <h3>Testing Different Outcomes <span class="emoji">🧪</span></h3>
+            <p>
+              Try changing securityLevel and isAdmin to test different outcomes:
+            </p>
+            <ul class="point-list">
+              <li>securityLevel 1 = Access granted</li>
+              <li>securityLevel 2 = Access granted</li>
+              <li>securityLevel 3 = Access denied</li>
+              <li>securityLevel 4 = Access denied</li>
+              <li>If isAdmin = true, access is granted.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-number">7/9</div>
+      </div>
+
+      <!-- Slide 8: If...Else Examples -->
+      <div class="slide" id="slide-7">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/if-else-examples/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>If...Else Examples <span class="emoji">💡</span></h2>
+
+          <div class="card">
+            <h3>Door Code Example <span class="emoji">🚪</span></h3>
+            <p>
+              This example shows how you can use if..else to "open a door" if
+              user enters correct code:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> doorCode =
+              <span class="code-number">1337</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (doorCode ==
+              <span class="code-number">1337</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Correct code.\nThe door is now open."</span
+              >);<br />
+              } <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Wrong code.\nThe door remains closed."</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Positive or Negative Number <span class="emoji">➕➖</span></h3>
+            <p>
+              This example shows how you can use if..else to find out if a
+              number is positive or negative:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNum =
+              <span class="code-number">10</span>;
+              <span class="code-comment"
+                >// Is this a positive or negative number?</span
+              ><br /><br />
+
+              <span class="code-keyword">if</span> (myNum >
+              <span class="code-number">0</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"The value is a positive number."</span
+              >);<br />
+              } <span class="code-keyword">else if</span> (myNum <
+              <span class="code-number">0</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"The value is a negative number."</span
+              >);<br />
+              } <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"The value is 0."</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Even or Odd Number <span class="emoji">🔢</span></h3>
+            <p>Find out if a number is even or odd:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myNum =
+              <span class="code-number">5</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (myNum %
+              <span class="code-number">2</span> ==
+              <span class="code-number">0</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d is even.\n"</span
+              >, myNum);<br />
+              } <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"%d is odd.\n"</span
+              >, myNum);<br />
+              }
+            </div>
+          </div>
+        </div>
+        <div class="slide-number">8/9</div>
+      </div>
+
+      <!-- Slide 9: More If...Else Examples -->
+      <div class="slide" id="slide-8">
+        <div
+          class="cartoon-bg"
+          style="
+            background-image: url('https://picsum.photos/seed/more-examples/1920/1080.jpg');
+          "
+        ></div>
+        <div class="slide-content">
+          <h2>More If...Else Examples <span class="emoji">💡</span></h2>
+
+          <div class="card">
+            <h3>Voting Age <span class="emoji">🗳️</span></h3>
+            <p>Find out if a person is old enough to vote:</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> myAge =
+              <span class="code-number">25</span>;<br />
+              <span class="code-keyword">int</span> votingAge =
+              <span class="code-number">18</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (myAge >= votingAge) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Old enough to vote!"</span
+              >);<br />
+              } <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Not old enough to vote."</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Temperature Check <span class="emoji">🌡️</span></h3>
+            <p>Check temperature (Celsius):</p>
+            <div class="code-block">
+              <span class="code-keyword">int</span> temperature =
+              <span class="code-number">30</span>;<br /><br />
+
+              <span class="code-keyword">if</span> (temperature <
+              <span class="code-number">0</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"It's freezing!\n"</span
+              >);<br />
+              } <span class="code-keyword">else if</span> (temperature <
+              <span class="code-number">20</span>) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"It's cool.\n"</span
+              >);<br />
+              } <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"It's warm.\n"</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>System Access Control <span class="emoji">🔐</span></h3>
+            <p>
+              System access control example - You must be logged in, and then
+              you either need to be an admin, or have a high security clearance
+              (level 1 or 2) to get access:
+            </p>
+            <div class="code-block">
+              <span class="code-keyword">bool</span> isLoggedIn =
+              <span class="code-keyword">true</span>;<br />
+              <span class="code-keyword">bool</span> isAdmin =
+              <span class="code-keyword">false</span>;<br />
+              <span class="code-keyword">int</span> securityLevel =
+              <span class="code-number">3</span>;
+              <span class="code-comment">// 1 = highest</span><br /><br />
+
+              <span class="code-keyword">if</span> (isLoggedIn && (isAdmin ||
+              securityLevel <= <span class="code-number">2</span>)) {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Access granted\n"</span
+              >);<br />
+              } <span class="code-keyword">else</span> {<br />
+              &nbsp;&nbsp;<span class="code-function">printf</span>(<span
+                class="code-string"
+                >"Access denied\n"</span
+              >);<br />
+              }
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <p style="text-align: center; color: white; margin-bottom: 0">
+              Conditional statements are fundamental to programming logic!
+              <span class="emoji">🧠</span><br />
+              They allow your programs to make decisions and respond differently
+              based on conditions.
+            </p>
+          </div>
+        </div>
+        <div class="slide-number">9/9</div>
+      </div>
+    </div>
+
+    <script>
+      // Function to scroll to a specific slide
+      function scrollToSlide(slideIndex) {
+        const slide = document.getElementById(`slide-${slideIndex}`);
+        slide.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Update navigation dots based on scroll position
+      window.addEventListener("scroll", () => {
+        const slides = document.querySelectorAll(".slide");
+        const navDots = document.querySelectorAll(".nav-dot");
+
+        let currentSlide = 0;
+        slides.forEach((slide, index) => {
+          const rect = slide.getBoundingClientRect();
+          if (
+            rect.top <= window.innerHeight / 2 &&
+            rect.bottom >= window.innerHeight / 2
+          ) {
+            currentSlide = index;
+          }
+        });
+
+        navDots.forEach((dot, index) => {
+          if (index === currentSlide) {
+            dot.classList.add("active");
+          } else {
+            dot.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
